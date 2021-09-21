@@ -52,15 +52,15 @@ export const pathAndArgs = () => {
 };
 
 const url2argsPath = (url) => {
-	const sets = url.split('?')[1]
-	const args = {}
-	if (!sets) return args
+	const sets = url.split('?')[1];
+	const args = {};
+	if (!sets) return args;
 	sets.split('&').forEach((set) => {
-		set = set.split('=')
-		args[set[0]] = set[1]
-	})
-	return args
-}
+		set = set.split('=');
+		args[set[0]] = set[1];
+	});
+	return args;
+};
 
 const url2args = (url) => Array.from(new URL(url).searchParams.entries())
 	.map(([k, v]) => ({ [k]: v }))

@@ -11,7 +11,7 @@ import './App.scss';
 
 const App = () => {
 	const { state, dispatch, update } = useContext(appStore);
-	const { dialog, loading, event } = state.app
+	const { dialog, loading, event } = state.app;
 
 	useHistory(() => {
 		window.scrollTo(0, 0);
@@ -22,7 +22,7 @@ const App = () => {
 		});
 	}, true);
 	const pathVars = pathAndArgs();
-	const { path } = pathVars
+	const { path } = pathVars;
 	
 	const onMount = async () => {
 		await dispatch(onAppMount(pathVars));

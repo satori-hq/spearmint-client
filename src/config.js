@@ -10,24 +10,24 @@ module.exports = function getConfig(network = 'mainnet') {
 	};
 
 	switch (network) {
-		case 'testnet':
-			config = {
-				explorerUrl: "https://explorer.testnet.near.org",
-				...config,
-				GAS: "200000000000000",
-				gas: "200000000000000",
-				linkdropContractId: 'linkdrop-wrapper.testnet',
-				contractId: contractName,
-			};
+	case 'testnet':
+		config = {
+			explorerUrl: "https://explorer.testnet.near.org",
+			...config,
+			GAS: "200000000000000",
+			gas: "200000000000000",
+			linkdropContractId: 'linkdrop-wrapper.testnet',
+			contractId: contractName,
+		};
 		break;
-		case 'mainnet':
-			config = {
-				...config,
-				networkId: "mainnet",
-				nodeUrl: "https://rpc.mainnet.near.org",
-				walletUrl: "https://wallet.near.org",
-				helperUrl: "https://helper.mainnet.near.org",
-			};
+	case 'mainnet':
+		config = {
+			...config,
+			networkId: "mainnet",
+			nodeUrl: "https://rpc.mainnet.near.org",
+			walletUrl: "https://wallet.near.org",
+			helperUrl: "https://helper.mainnet.near.org",
+		};
 		break;
 	}
 

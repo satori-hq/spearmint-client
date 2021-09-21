@@ -23,7 +23,7 @@ export const Dialog = ({
 	const handleClose = (cancelled = false) => {
 		reject();
 		if (cancelled === true && onCancelled) {
-			return onCancelled()
+			return onCancelled();
 		}
 		if (onClose) onClose();
 		if (onCloseButton) Object.values(onCloseButton)[0]();

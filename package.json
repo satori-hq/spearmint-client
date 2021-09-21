@@ -15,7 +15,6 @@
 		"react-dom": "^17.0.1"
 	},
 	"devDependencies": {
-		"@parcel/transformer-sass": "2.0.0-rc.0",
 		"eslint": "^7.14.0",
 		"rimraf": "^3.0.2"
 	},
@@ -25,8 +24,8 @@
 	"scripts": {
 		"clean": "rimraf ./.parcel-cache",
 		"swap": "mkdir -p dist && cp -a output/. dist/ && rimraf output && cd dist && find -not -newermt '-30 seconds' -delete",
-		"build": "yarn clean && parcel build src/index.html --no-source-maps --no-optimize --dist-dir output && yarn swap",
-		"build:beta": "yarn clean && parcel build src/index.html --dist-dir output && yarn swap",
+		"patch": "rsync -a ./patches/ ./",
+		"build": "yarn patch && yarn clean && parcel build src/index.html --no-source-maps --dist-dir output && yarn swap",
 		"fix": "eslint src/ --fix",
 		"start": "parcel src/index.html"
 	}

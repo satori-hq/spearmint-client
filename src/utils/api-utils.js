@@ -1,7 +1,7 @@
 import getConfig from '../config';
 import * as nearAPI from 'near-api-js';
 import { get } from '../utils/storage';
-import { API_ROUTE } from '../state/app'
+import { API_ROUTE } from '../state/app';
 
 export const {
 	GAS,
@@ -20,19 +20,19 @@ export const getSignature = async (account, key) => {
 };
 
 export const bodyWithSig = async (account, contractId, body) => {
-	console.log(account, contractId, body)
+	console.log(account, contractId, body);
 	return {
 		...body,
 		accountId: account.accountId,
 		contractId,
 		...(await getSignature(account))
-	}
+	};
 };
 
 export const fetchJsonWithTwitter = ({ url, method, body }) => {
 	const accessToken = get('accessToken', null);
-	if (!accessToken) return
-	return fetchJson({ url: url + '?accessToken=' + accessToken, method, body })
+	if (!accessToken) return;
+	return fetchJson({ url: url + '?accessToken=' + accessToken, method, body });
 };
 
 export const fetchJson = ({ url, method = 'GET', body = {} }) => fetch(API_ROUTE + url, {
@@ -40,18 +40,18 @@ export const fetchJson = ({ url, method = 'GET', body = {} }) => fetch(API_ROUTE
 	headers: new Headers({ 'content-type': 'application/json' }),
 	body: method === 'POST' ? JSON.stringify(body) : undefined
 }).then(async (res) => {
-	const { ok, status } = res
+	const { ok, status } = res;
 	if (!ok) {
 		let error = await res.text();
 		try {
 			error = JSON.parse(error);
 		} catch (e) {
-			console.warn(e)
+			console.warn(e);
 		}
-		throw { status, error }
+		throw { status, error };
 	}
 	if (status === 204) {
 		return null;
 	}
-	return await res.json()
+	return await res.json();
 });

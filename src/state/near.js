@@ -22,7 +22,7 @@ export const initNear = () => async ({ update, getState, dispatch }) => {
 	const { near, wallet } = await getWallet();
 
 	wallet.signIn = () => {
-		console.log(contractId)
+		console.log(contractId);
 		wallet.requestSignIn(contractId, 'Blah Blah');
 	};
 	const signOut = wallet.signOut;
@@ -42,7 +42,7 @@ export const initNear = () => async ({ update, getState, dispatch }) => {
 
 	await update('near', { near, wallet, account });
 
-	return { near, wallet, account }
+	return { near, wallet, account };
 };
 
 

@@ -15,7 +15,7 @@ const launchConfetti = () => confetti({
 	startVelocity: 50,
 	gravity: 2,
 	colors: ['#2FD2E9', '#3A90F4', '#B950E3']
-})
+});
 
 export const ClaimRoute = (props) => {
 	const { state, dispatch, update } = props;
@@ -23,14 +23,14 @@ export const ClaimRoute = (props) => {
 	const { wallet, account } = state.near;
 	const { dialog, loading } = state.app;
 	const { path, args, pathArgs } = pathAndArgs();
-	console.log(pathArgs)
+	console.log(pathArgs);
 
 	let accountId = window.location.href.split('?accountId=')[1]?.split('&')[0];
 	if (account) {
 		accountId = account.accountId;
 	}
 
-	const code = pathArgs[0]
+	const code = pathArgs[0];
 
 	useHistory(() => {
 		window.scrollTo(0, 0);
@@ -42,7 +42,7 @@ export const ClaimRoute = (props) => {
 	}, true);
 
 	const onMount = async () => {
-		dispatch(initNear())
+		dispatch(initNear());
 		if (code && code.length) {
 			update('app.loading', true);
 			const item = await dispatch(getItem(code));
@@ -90,7 +90,7 @@ export const ClaimRoute = (props) => {
 
 	const handleClaimNFT = async () => {
 		update('app.loading', true);
-		const { contractId, title } = item
+		const { contractId, title } = item;
 		let response;
 		try {
 			response = await fetchJson({
@@ -106,10 +106,10 @@ export const ClaimRoute = (props) => {
 		}
 		dispatch(getItem(code));
 		update('app.loading', false);
-		launchConfetti()
+		launchConfetti();
 	};
 
-	console.log(item)
+	console.log(item);
 
 	const { ldHash: createdAccount, nftHash: claimedItem } = item || {};
 
@@ -121,5 +121,5 @@ export const ClaimRoute = (props) => {
 		walletUrl,
 		dialog, wallet, 
 		handleCreateWallet, handleClaimNFT,
-	}} />
+	}} />;
 };

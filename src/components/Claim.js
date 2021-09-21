@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 
-import { getType } from '../state/near'
+import { getType } from '../state/near';
 import { Dialog } from './Dialog';
 
 import './Claim.scss';
 
-const ipfsGateway = 'https://cloudflare-ipfs.com/ipfs/'
+const ipfsGateway = 'https://cloudflare-ipfs.com/ipfs/';
 
 
 const Layout = ({ media, title, paras, buttons }) => <div className="layout">
@@ -19,7 +19,7 @@ const Layout = ({ media, title, paras, buttons }) => <div className="layout">
 			<button key={i}className={className} onClick={onClick}>{label}</button>
 		</>)}
 	</div>
-</div>
+</div>;
 
 export const Claim = (props) => {
 
@@ -30,17 +30,17 @@ export const Claim = (props) => {
 		walletUrl,
 		dialog, wallet, 
 		handleCreateWallet, handleClaimNFT,
-	} = props
+	} = props;
 
-	const [media, setMedia] = useState(null)
+	const [media, setMedia] = useState(null);
 
 	const loadItem = async () => {
-		if (!item) return
-		const { contractId, title } = item
-		setMedia(ipfsGateway + (await getType(contractId, title)).metadata.media)
-	}
+		if (!item) return;
+		const { contractId, title } = item;
+		setMedia(ipfsGateway + (await getType(contractId, title)).metadata.media);
+	};
 
-	useEffect(loadItem, [item])
+	useEffect(loadItem, [item]);
 
 	if (claimedItem) {
 		return accountId ? <div className="claim">
@@ -117,4 +117,4 @@ export const Claim = (props) => {
 		</div>
 	</>;
 	
-}
+};

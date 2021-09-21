@@ -51,7 +51,7 @@ export const State = (initialState, prefix) => {
 			dispatch({ path, newState });
 		};
 
-		const wrappedDispatch = (fn) => fn({ update, getState, dispatch: wrappedDispatch })
+		const wrappedDispatch = (fn) => fn({ update, getState, dispatch: wrappedDispatch });
 
 		return <InnerProvider value={{ update, state, dispatch: wrappedDispatch }}>{children}</InnerProvider>;
 	};
