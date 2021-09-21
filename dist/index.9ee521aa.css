@@ -1,0 +1,308 @@
+.loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 10000;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.loading.bg {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.lds-loader {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+
+.lds-loader div {
+  display: inline-block;
+  position: absolute;
+  left: 8px;
+  width: 16px;
+  background: #B950E3;
+  animation: lds-loader 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
+}
+
+.lds-loader div:nth-child(1) {
+  left: 8px;
+  animation-delay: -0.24s;
+}
+
+.lds-loader div:nth-child(2) {
+  left: 32px;
+  animation-delay: -0.12s;
+}
+
+.lds-loader div:nth-child(3) {
+  left: 56px;
+  animation-delay: 0;
+}
+
+@keyframes lds-loader {
+  0% {
+    top: 8px;
+    height: 64px;
+  }
+  50%, 100% {
+    top: 24px;
+    height: 32px;
+  }
+}
+section.footer {
+  margin: 1rem 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+section.footer > span {
+  font-family: Poppins;
+  font-size: 14px;
+  color: #AF9DC4;
+  text-transform: uppercase;
+  display: inline-block;
+  margin: 0 1rem;
+}
+button {
+  cursor: pointer;
+  text-transform: uppercase;
+  padding: 8px;
+  height: 48px;
+  border: none;
+  width: 100%;
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  outline: none;
+  border-radius: 4px;
+  background: #624DDA;
+  color: white;
+}
+button > img {
+  margin-right: 1rem;
+}
+button:disabled {
+  background: rgba(54, 56, 102, 0.1);
+}
+button.text {
+  background: none;
+  text-decoration: underline;
+  color: #624DDA;
+  text-transform: none;
+}
+button.outline {
+  border: 2px solid #624DDA;
+  background: none;
+  color: #624DDA;
+}
+
+.claim {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+}
+.claim img {
+  width: 100%;
+  margin: 1rem 0;
+}
+.claim > div {
+  margin: 0 1rem;
+  margin-top: 2rem;
+  max-width: 480px;
+}
+.claim > div .info {
+  color: #00C17C;
+  font-weight: 700;
+}
+
+.purple {
+  color: #624DDA;
+}
+body {
+  margin: 0 !important;
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+}
+
+.center {
+  text-align: center;
+}
+
+.margin-20 {
+  width: 100%;
+  height: 20px;
+}
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: #F8F8F8;
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  min-height: 100vh;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  max-width: 1024px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+#background {
+  position: fixed;
+  left: 0;
+  z-index: -1;
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(ellipse 20vw 40vw at 20vw -5vh, #DEFFF5, transparent 30vw), radial-gradient(ellipse 20vw 40vw at 0 15vh, #DEE9FF, transparent 30vw), radial-gradient(ellipse 20vw 40vw at 80vw 105vh, #FFDEFC, transparent 30vw), radial-gradient(ellipse 20vw 40vw at 100vw 85vh, #D6EEFF, transparent 30vw);
+  background-size: 100vw 100vh;
+  background-repeat: no-repeat;
+  filter: blur(24px);
+}
+
+.claim {
+  padding-top: 1rem;
+}
+.claim .layout {
+  margin: 0;
+  max-width: 100%;
+}
+.claim .layout > div {
+  padding: 0 1rem;
+}
+.claim .layout > div:first-of-type {
+  margin: 0;
+  position: relative;
+}
+.claim .layout > div:first-of-type::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: -7px;
+  left: 8px;
+  right: 8px;
+  bottom: 0;
+  border-radius: 22px;
+  padding: 16px;
+  background: linear-gradient(to right, #2FD2E9, #3A90F4, #B950E3);
+  opacity: 50%;
+}
+.claim h1 {
+  font-family: "Merriweather", serif;
+}
+.claim h1 > span > span.sparkle {
+  background: linear-gradient(to right, #2FD2E9, #3A90F4, #B950E3);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.claim img {
+  margin: 0;
+  border-radius: 16px;
+}
+
+@media (min-width: 992px) {
+  h1, p {
+    text-align: left;
+  }
+
+  .claim {
+    padding-top: 10vw;
+  }
+  .claim .layout {
+    display: flex;
+    justify-content: space-around;
+  }
+  .claim .layout > div {
+    min-width: 512px;
+  }
+}
+p {
+  margin: 0;
+  margin-bottom: 1rem;
+}
+
+button, input {
+  padding: 8px;
+  height: 48px;
+  border: none;
+  width: 100%;
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  outline: none;
+  border-radius: 16px;
+}
+
+button {
+  text-transform: none;
+  background: black;
+  color: white;
+  height: 56px;
+  border-radius: 16px;
+}
+button > img {
+  margin-right: 1rem;
+}
+button:disabled {
+  background: rgba(54, 56, 102, 0.1);
+}
+button.text {
+  background: none;
+  text-decoration: underline;
+  color: #363866;
+}
+button.outline {
+  border: 1px solid black;
+  background: none;
+  color: #363866;
+}
+
+input {
+  padding-left: 1rem;
+  border-radius: 8px;
+  border: 2px solid #e9e9ea;
+}
+
+.profile {
+  margin: 1rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.profile > div {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.profile > div > img, .profile > div > div {
+  width: 48px;
+  height: 48px;
+  border-radius: 24px;
+  background: white;
+}
+.profile > div > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+.profile > div > div > img {
+  width: 60%;
+}
+.profile > div > img, .profile > div > p {
+  margin-right: 1rem;
+}
+/*# sourceMappingURL=index.9ee521aa.css.map */

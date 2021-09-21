@@ -8,15 +8,15 @@ import './Claim.scss';
 const ipfsGateway = 'https://cloudflare-ipfs.com/ipfs/';
 
 
-const Layout = ({ media, title, paras, buttons }) => <div className="layout">
+const Layout = ({ media, title, paras, buttons = [] }) => <div className="layout">
 	<div>
 		<img src={media} crossOrigin="*" />
 	</div>
 	<div>
-		{ title && <h1>{title}</h1>}
-		{ paras.length && paras.map((p, i) => <p key={i}>{p}</p>)}
-		{ buttons.length && buttons.map(({ label, className, onClick }, i) => label && <>
-			<button key={i}className={className} onClick={onClick}>{label}</button>
+		{title && <h1>{title}</h1>}
+		{paras.length && paras.map((p, i) => <p key={i}>{p}</p>)}
+		{buttons.length > 0 && buttons.map(({ label, className, onClick }, i) => label && <>
+			<button key={i} className={className} onClick={onClick}>{label}</button>
 		</>)}
 	</div>
 </div>;
@@ -28,7 +28,7 @@ export const Claim = (props) => {
 		createdAccount, claimedItem,
 		accountId,
 		walletUrl,
-		dialog, wallet, 
+		dialog, wallet,
 		handleCreateWallet, handleClaimNFT,
 	} = props;
 
@@ -55,15 +55,19 @@ export const Claim = (props) => {
 					label: 'View NFT in NEAR Wallet',
 					onClick: () => window.open(walletUrl + '/?tab=collectibles')
 				}]
-			}}/>
+			}} />
 		</div>
 			:
 			<div className="claim">
-				<div>
-					<h1>NFT claimed!</h1>
-					{ media && <img src={media} /> }
-					<p>This NFT was already claimed!</p>
-				</div>
+
+				<Layout {...{
+					title: <span>NFT claimed!</span>,
+					media,
+					paras: [
+						'This NFT was already claimed.'
+					],
+				}} />
+
 			</div>;
 	}
 
@@ -93,7 +97,7 @@ export const Claim = (props) => {
 							className: 'outline',
 							onClick: handleCreateWallet
 						} : {}]
-					}}/>
+					}} />
 					:
 					<Layout {...{
 						title: <span>Wallet <span className="sparkle">{accountId}</span> connected!</span>,
@@ -112,9 +116,9 @@ export const Claim = (props) => {
 								window.location.href = window.location.href.split('?')[0];
 							}
 						} : {}]
-					}}/>
+					}} />
 			}
 		</div>
 	</>;
-	
+
 };
