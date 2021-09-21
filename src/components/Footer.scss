@@ -1,0 +1,22 @@
+@use '../globals.scss' as *;
+
+section.footer {
+	margin: $margin 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+
+	> span {
+		font-family: Poppins;
+		font-size: 14px;
+		color: $light-purple;
+		text-transform: uppercase;
+		display: inline-block;
+		margin: 0 $margin;
+	}
+}
+
+@media (min-width: 992px) {
+	
+}

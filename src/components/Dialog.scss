@@ -1,0 +1,53 @@
+$width: 480px;
+$margin: 1rem;
+$bg: #F8F8F8;
+$double: 2rem;
+$shadow: 0 0 8px #000000, 0 0 32px rgba(0, 0, 0, 0.5);
+
+/// dialog
+
+section.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 2000;
+    margin: 0;
+    .background, .content {
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: rgba(0, 0, 0, 0.5);
+        width: 100vw;
+        height: 100vh;
+    }
+    .content {
+        background: none;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .wrap {
+			max-width: $width;
+            box-shadow: $shadow;
+            text-align: center;
+            margin: $margin;
+            background: $bg;
+            padding: $margin;
+            padding-top: $double;
+			border-radius: 4px;
+            flex: 1;
+            position: relative;
+            .button {
+                justify-content: space-around;
+            }
+            .close {
+                position: absolute;
+                top: 16px;
+                right: 16px;
+            }
+        }
+
+    }
+}

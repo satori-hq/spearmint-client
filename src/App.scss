@@ -1,0 +1,198 @@
+
+$width: 1024px;
+$half-width: 512px;
+$margin: 1rem;
+$double: 2rem;
+$half: 0.5rem;
+$padding: 0.5rem;
+$text-color: #1A1A25;
+$blue: #2A64D6;
+$purple: #6468D3;
+$dark-purple: #363866;
+$gray: rgba(109, 113, 117, 1);
+$bg: #F8F8F8;
+$border-color: #e9e9ea;
+$border-radius: 16px;
+$disabled-color: rgba(54, 56, 102, 0.1);
+$shadow: 0 0 8px black, 0 0 32px rgba(0, 0, 0, 0.5);
+$gradient: linear-gradient(to right, #2FD2E9, #3A90F4, #B950E3);
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	background: $bg;
+	font-family: 'Poppins', sans-serif;
+	font-weight: 400;
+	min-height: 100vh;
+}
+
+#root {
+	width: 100%;
+	height: 100%;
+	min-height: 100vh;
+    max-width: $width;
+    margin: auto;
+	/// for footer in App.js
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+#background {
+	position: fixed;
+	left: 0;
+	z-index: -1;
+	width: 100vw;
+	height: 100vh;
+	background:
+		radial-gradient(ellipse 20vw 40vw at 20vw -5vh, #DEFFF5, transparent 30vw),
+		radial-gradient(ellipse 20vw 40vw at 0 15vh, #DEE9FF, transparent 30vw),
+		radial-gradient(ellipse 20vw 40vw at 80vw 105vh, #FFDEFC, transparent 30vw),
+		radial-gradient(ellipse 20vw 40vw at 100vw 85vh, #D6EEFF, transparent 30vw);
+	background-size: 100vw 100vh;
+	background-repeat: no-repeat;
+	filter: blur(24px);
+}
+
+.claim {
+	padding-top: $margin;
+	.layout {
+		margin: 0;
+		max-width: 100%;
+		> div {
+			padding: 0 $margin;
+		}
+		> div:first-of-type {
+			margin: 0;
+			position:relative;
+			&::before {
+				content: '';
+				position: absolute;
+				z-index: -1;
+				top: -7px;
+				left: 8px;
+				right: 8px;
+				bottom: 0;
+				border-radius: 22px;
+				padding: 16px;
+				background: $gradient; 
+				opacity: 50%;
+			}	
+		}
+	}
+	h1 {
+		font-family: 'Merriweather', serif;
+		> span > span.sparkle {
+			background: $gradient;
+			-webkit-background-clip: text;
+			-webkit-text-fill-color: transparent;
+		}
+	}
+	img {
+		margin: 0;
+		border-radius: $border-radius;
+	}
+}
+
+@media (min-width: 992px) {
+	h1, p {
+		text-align: left;
+	}
+	.claim {
+		padding-top: 10vw;
+		.layout {
+			display: flex;
+			justify-content: space-around;
+			> div {
+				min-width: $half-width;
+			}
+		}
+	}
+}
+
+p {
+	margin: 0;
+	margin-bottom: $margin;
+}
+
+button, input {
+	padding: 8px;
+	height: 48px;
+    border: none;
+	width: 100%;
+	font-family: 'Poppins', sans-serif;
+	font-weight: 600;
+	margin-bottom: $margin;
+	outline: none;
+	border-radius: $border-radius;
+}
+
+button {
+	text-transform: none;
+    background: black;
+    color: white;
+	height: 56px;
+	border-radius: 16px;
+	> img {
+		margin-right: $margin;
+	}
+	&:disabled {
+		background: $disabled-color;
+	}
+	&.text {
+		background: none;
+		text-decoration: underline;
+		color: $dark-purple;
+	}
+	&.outline {
+		border: 1px solid black;
+		background: none;
+		color: $dark-purple;
+	}
+}
+
+input {
+	padding-left: $margin;
+	border-radius: 8px;
+	border: 2px solid $border-color;
+}
+
+
+/// clean up below
+
+
+/// twitter profile
+
+.profile {
+	margin: $margin 0;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	> div {
+		display: flex;
+		align-items: center;
+		justify-content: flex-start;
+		> img, > div {
+			width: 48px;
+			height: 48px;
+			border-radius: 24px;
+			background: white;
+			
+		}
+		> div {
+			display: flex;
+			align-items: center;
+			justify-content: space-around;
+			> img {
+				width: 60%;
+			}
+		}
+
+		> img, > p {
+			margin-right: $margin;
+		}
+		
+	}
+}
