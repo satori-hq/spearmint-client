@@ -66,12 +66,17 @@ export const Claim = (props) => {
 					paras: [
 						'This NFT was already claimed.'
 					],
+					buttons: [{
+						label: 'View NFTs in your NEAR Wallet',
+						onClick: () => window.open(walletUrl + '/?tab=collectibles')
+					}]
 				}} />
 
 			</div>;
 	}
 
 	if (!item) {
+		return null
 		return !loading && <div>
 			<h1>Satori</h1>
 			<p>Check the link sent to you and try again.</p>

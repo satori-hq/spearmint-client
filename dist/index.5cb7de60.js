@@ -41000,6 +41000,12 @@ const Claim = (props)=>{
             paras: [
                 'This NFT was already claimed.'
             ],
+            buttons: [
+                {
+                    label: 'View NFTs in your NEAR Wallet',
+                    onClick: ()=>window.open(walletUrl + '/?tab=collectibles')
+                }
+            ],
             __source: {
                 fileName: "src/components/Claim.js",
                 lineNumber: 63
@@ -41007,38 +41013,14 @@ const Claim = (props)=>{
             __self: undefined
         })
     });
-    if (!item) return !loading && /*#__PURE__*/ _jsxRuntime.jsxs("div", {
-        __source: {
-            fileName: "src/components/Claim.js",
-            lineNumber: 75
-        },
-        __self: undefined,
-        children: [
-            /*#__PURE__*/ _jsxRuntime.jsx("h1", {
-                __source: {
-                    fileName: "src/components/Claim.js",
-                    lineNumber: 76
-                },
-                __self: undefined,
-                children: "Satori"
-            }),
-            /*#__PURE__*/ _jsxRuntime.jsx("p", {
-                __source: {
-                    fileName: "src/components/Claim.js",
-                    lineNumber: 77
-                },
-                __self: undefined,
-                children: "Check the link sent to you and try again."
-            })
-        ]
-    });
+    if (!item) return null;
     return(/*#__PURE__*/ _jsxRuntime.jsxs(_jsxRuntime.Fragment, {
         children: [
             dialog && /*#__PURE__*/ _jsxRuntime.jsx(_dialog.Dialog, {
                 ...dialog,
                 __source: {
                     fileName: "src/components/Claim.js",
-                    lineNumber: 82
+                    lineNumber: 87
                 },
                 __self: undefined
             }),
@@ -41046,7 +41028,7 @@ const Claim = (props)=>{
                 className: "claim",
                 __source: {
                     fileName: "src/components/Claim.js",
-                    lineNumber: 83
+                    lineNumber: 88
                 },
                 __self: undefined,
                 children: !accountId ? /*#__PURE__*/ _jsxRuntime.jsx(Layout, {
@@ -41077,7 +41059,7 @@ const Claim = (props)=>{
                     ],
                     __source: {
                         fileName: "src/components/Claim.js",
-                        lineNumber: 86
+                        lineNumber: 91
                     },
                     __self: undefined
                 }) : /*#__PURE__*/ _jsxRuntime.jsx(Layout, {
@@ -41112,7 +41094,7 @@ const Claim = (props)=>{
                     ],
                     __source: {
                         fileName: "src/components/Claim.js",
-                        lineNumber: 102
+                        lineNumber: 107
                     },
                     __self: undefined
                 })
