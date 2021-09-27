@@ -14,10 +14,14 @@ const Layout = ({ media, title, paras, buttons = [] }) => <div className="layout
 	</div>
 	<div>
 		{title && <h1>{title}</h1>}
-		{paras.length && paras.map((p, i) => <p key={i}>{p}</p>)}
-		{buttons.length > 0 && buttons.map(({ label, className, onClick }, i) => label && <>
-			<button key={i} className={className} onClick={onClick}>{label}</button>
-		</>)}
+		<div>
+			{paras.length && paras.map((p, i) => <p key={i}>{p}</p>)}
+		</div>
+		<div>
+			{buttons.length > 0 && buttons.map(({ label, className, onClick }, i) => label &&
+				<button key={i} className={className} onClick={onClick}>{label}</button>
+			)}
+		</div>
 	</div>
 </div>;
 

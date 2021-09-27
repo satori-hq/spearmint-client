@@ -16,8 +16,8 @@ const initialState = {
 	near: {},
 };
 
-export const API_ROUTE = 'https://near-api-satori.near.workers.dev/v1';
-export const IPFS_ROUTE = API_ROUTE + '/ipfs/';
+export const API_ROUTE = 'https://spearmint.satori.art/v1/';
+export const IPFS_ROUTE = 'https://cloudflare-ipfs.com/ipfs/';
 export const API_SERVER = process.env.REACT_APP_API_SERVER;
 export const CALLBACK_ID = '__CALLBACK_ID';
 export const { appStore, AppProvider } = State(initialState, 'app');
@@ -27,7 +27,7 @@ export const getItem = (code) => async ({ update, getState, dispatch }) => {
 	/// TODO should we throw this in a post with body call so logs don't scoop it?
 	
 	const res = await fetchJson({
-		url: `/claim/${code}/get`
+		url: `claim/${code}/get`
 	});
 	update('item', res);
 	return res;
@@ -55,12 +55,6 @@ export const onAppMount = ({ path, args, pathArgs }) => async ({ update, getStat
 	}
 	
 	update('app', { user, loading: false });
-};
-
-export const loadEvent = (id) => async ({ update }) => {
-	let event = await fetchJson({ url: '/event/' + id });
-	if (!event) event = {};
-	update('app', { event });
 };
 
 export const setDialog = (dialog) => async ({ update }) => {

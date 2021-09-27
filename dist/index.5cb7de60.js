@@ -23239,8 +23239,6 @@ parcelHelpers.export(exports, "getItem", ()=>getItem
 );
 parcelHelpers.export(exports, "onAppMount", ()=>onAppMount
 );
-parcelHelpers.export(exports, "loadEvent", ()=>loadEvent
-);
 parcelHelpers.export(exports, "setDialog", ()=>setDialog
 );
 var _state = require("../utils/state");
@@ -23261,15 +23259,15 @@ const initialState = {
     near: {
     }
 };
-const API_ROUTE = 'https://near-api-satori.near.workers.dev/v1';
-const IPFS_ROUTE = API_ROUTE + '/ipfs/';
+const API_ROUTE = 'https://spearmint.satori.art/v1/';
+const IPFS_ROUTE = 'https://cloudflare-ipfs.com/ipfs/';
 const API_SERVER = undefined;
 const CALLBACK_ID = '__CALLBACK_ID';
 const { appStore , AppProvider  } = _state.State(initialState, 'app');
 const getItem = (code)=>async ({ update , getState , dispatch  })=>{
         /// TODO should we throw this in a post with body call so logs don't scoop it?
         const res = await _apiUtils.fetchJson({
-            url: `/claim/${code}/get`
+            url: `claim/${code}/get`
         });
         update('item', res);
         return res;
@@ -23294,17 +23292,6 @@ const onAppMount = ({ path , args , pathArgs  })=>async ({ update , getState , d
         update('app', {
             user,
             loading: false
-        });
-    }
-;
-const loadEvent = (id)=>async ({ update  })=>{
-        let event = await _apiUtils.fetchJson({
-            url: '/event/' + id
-        });
-        if (!event) event = {
-        };
-        update('app', {
-            event
         });
     }
 ;
@@ -38168,30 +38155,40 @@ const Layout = ({ media , title , paras , buttons =[]  })=>/*#__PURE__*/ _jsxRun
                         __self: undefined,
                         children: title
                     }),
-                    paras.length && paras.map((p, i)=>/*#__PURE__*/ _jsxRuntime.jsx("p", {
-                            __source: {
-                                fileName: "src/components/Claim.js",
-                                lineNumber: 17
-                            },
-                            __self: undefined,
-                            children: p
-                        }, i)
-                    ),
-                    buttons.length > 0 && buttons.map(({ label , className , onClick  }, i)=>label && /*#__PURE__*/ _jsxRuntime.jsx(_jsxRuntime.Fragment, {
-                            children: [
-                                /*#__PURE__*/ _jsxRuntime.jsx("button", {
-                                    className: className,
-                                    onClick: onClick,
-                                    __source: {
-                                        fileName: "src/components/Claim.js",
-                                        lineNumber: 19
-                                    },
-                                    __self: undefined,
-                                    children: label
-                                }, i)
-                            ]
-                        })
-                    )
+                    /*#__PURE__*/ _jsxRuntime.jsx("div", {
+                        __source: {
+                            fileName: "src/components/Claim.js",
+                            lineNumber: 17
+                        },
+                        __self: undefined,
+                        children: paras.length && paras.map((p, i)=>/*#__PURE__*/ _jsxRuntime.jsx("p", {
+                                __source: {
+                                    fileName: "src/components/Claim.js",
+                                    lineNumber: 18
+                                },
+                                __self: undefined,
+                                children: p
+                            }, i)
+                        )
+                    }),
+                    /*#__PURE__*/ _jsxRuntime.jsx("div", {
+                        __source: {
+                            fileName: "src/components/Claim.js",
+                            lineNumber: 20
+                        },
+                        __self: undefined,
+                        children: buttons.length > 0 && buttons.map(({ label , className , onClick  }, i)=>label && /*#__PURE__*/ _jsxRuntime.jsx("button", {
+                                className: className,
+                                onClick: onClick,
+                                __source: {
+                                    fileName: "src/components/Claim.js",
+                                    lineNumber: 22
+                                },
+                                __self: undefined,
+                                children: label
+                            }, i)
+                        )
+                    })
                 ]
             })
         ]
@@ -38214,7 +38211,7 @@ const Claim = (props)=>{
         className: "claim",
         __source: {
             fileName: "src/components/Claim.js",
-            lineNumber: 46
+            lineNumber: 50
         },
         __self: undefined,
         children: /*#__PURE__*/ _jsxRuntime.jsx(Layout, {
@@ -38242,7 +38239,7 @@ const Claim = (props)=>{
             ],
             __source: {
                 fileName: "src/components/Claim.js",
-                lineNumber: 48
+                lineNumber: 52
             },
             __self: undefined
         })
@@ -38250,7 +38247,7 @@ const Claim = (props)=>{
         className: "claim",
         __source: {
             fileName: "src/components/Claim.js",
-            lineNumber: 61
+            lineNumber: 65
         },
         __self: undefined,
         children: /*#__PURE__*/ _jsxRuntime.jsx(Layout, {
@@ -38269,7 +38266,7 @@ const Claim = (props)=>{
             ],
             __source: {
                 fileName: "src/components/Claim.js",
-                lineNumber: 63
+                lineNumber: 67
             },
             __self: undefined
         })
@@ -38281,7 +38278,7 @@ const Claim = (props)=>{
                 ...dialog,
                 __source: {
                     fileName: "src/components/Claim.js",
-                    lineNumber: 87
+                    lineNumber: 91
                 },
                 __self: undefined
             }),
@@ -38289,7 +38286,7 @@ const Claim = (props)=>{
                 className: "claim",
                 __source: {
                     fileName: "src/components/Claim.js",
-                    lineNumber: 88
+                    lineNumber: 92
                 },
                 __self: undefined,
                 children: !accountId ? /*#__PURE__*/ _jsxRuntime.jsx(Layout, {
@@ -38320,7 +38317,7 @@ const Claim = (props)=>{
                     ],
                     __source: {
                         fileName: "src/components/Claim.js",
-                        lineNumber: 91
+                        lineNumber: 95
                     },
                     __self: undefined
                 }) : /*#__PURE__*/ _jsxRuntime.jsx(Layout, {
@@ -38355,7 +38352,7 @@ const Claim = (props)=>{
                     ],
                     __source: {
                         fileName: "src/components/Claim.js",
-                        lineNumber: 107
+                        lineNumber: 111
                     },
                     __self: undefined
                 })

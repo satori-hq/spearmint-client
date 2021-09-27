@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 
 import { useHistory, pathAndArgs } from '../utils/history';
-import { getItem, setDialog, API_ROUTE } from '../state/app';
+import { getItem, setDialog } from '../state/app';
 import { initNear, walletUrl } from '../state/near';
 import { fetchJson } from '../utils/api-utils';
 import confetti from 'canvas-confetti';
