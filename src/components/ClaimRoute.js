@@ -108,8 +108,9 @@ export const ClaimRoute = (props) => {
 			}));
 		}
 		/// TODO check if successful, get nftHash (from NEAR res) then update localStorage item to reflect this
-		set(ITEM_KEY + code, { ...item, nftHash: res.res.transaction.hash })
-
+		const newItem = { ...item, nftHash: res.res.transaction.hash }
+		set(ITEM_KEY + code, newItem)
+		update('item', newItem)
 		update('app.loading', false);
 		launchConfetti();
 	};

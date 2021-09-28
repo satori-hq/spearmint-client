@@ -37616,10 +37616,12 @@ const ClaimRoute = (props)=>{
             }));
         }
         /// TODO check if successful, get nftHash (from NEAR res) then update localStorage item to reflect this
-        _storage.set(_app.ITEM_KEY + code, {
+        const newItem = {
             ...item,
             nftHash: res.res.transaction.hash
-        });
+        };
+        _storage.set(_app.ITEM_KEY + code, newItem);
+        update('item', newItem);
         update('app.loading', false);
         launchConfetti();
     };
@@ -37641,7 +37643,7 @@ const ClaimRoute = (props)=>{
         handleClaimNFT,
         __source: {
             fileName: "src/components/ClaimRoute.js",
-            lineNumber: 125
+            lineNumber: 126
         },
         __self: undefined
     }));
