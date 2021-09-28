@@ -1,16 +1,15 @@
 import { State } from '../utils/state';
-import { postJson, fetchJson, fetchJsonWithTwitter, bodyWithSig } from '../utils/api-utils';
-import { get, set, del } from '../utils/storage';
+import { fetchJson } from '../utils/api-utils';
+import { get, set } from '../utils/storage'
 
+import { initNear, getType } from './near';
 // example
 const initialState = {
 	app: {
-		user: null,
 		dialog: null,
 		loading: true,
 		mounted: false,
 		clicked: false,
-		event: {},
 	},
 	item: null,
 	near: {},
@@ -19,42 +18,35 @@ const initialState = {
 export const API_ROUTE = 'https://spearmint.satori.art/v1/';
 export const IPFS_ROUTE = 'https://cloudflare-ipfs.com/ipfs/';
 export const API_SERVER = process.env.REACT_APP_API_SERVER;
-export const CALLBACK_ID = '__CALLBACK_ID';
+export const ITEM_KEY = '__ITEM_';
 export const { appStore, AppProvider } = State(initialState, 'app');
 
-export const getItem = (code) => async ({ update, getState, dispatch }) => {
-
-	/// TODO should we throw this in a post with body call so logs don't scoop it?
-	
-	const res = await fetchJson({
-		url: `claim/${code}/get`
-	});
-	update('item', res);
-	return res;
+export const onAppMount = ({ path, args, pathArgs }) => async ({ update, getState, dispatch }) => {
+	dispatch(initNear());
+	update('app', { loading: false });
 };
 
-export const onAppMount = ({ path, args, pathArgs }) => async ({ update, getState, dispatch }) => {
+export const getItem = (code) => async ({ update, getState, dispatch }) => {
+	let item = get(ITEM_KEY + code, null)
 
-	let { accessToken } = args;
-
-	if (accessToken && accessToken.length) {
-		set('accessToken', accessToken);
-		// history.push(path)
-		window.location.href = window.location.origin + '/#/r/' + get(CALLBACK_ID);
-		window.location.reload();
+	// media in localStorage?
+	const media = item?.media
+	// get new item state
+	try {
+		/// TODO should we throw this in a post with body call so logs don't scoop it?
+		item = await fetchJson({
+			url: `claim/${code}/get`
+		});
+	} catch(e) {
+		if (e.error !== 'no claim') throw e
 	}
 
-	if (!accessToken) {
-		accessToken = get('accessToken', null);
-	}
+	if (!item) return null
 
-	let user;
-	if (accessToken) {
-		const res = await fetchJsonWithTwitter({ url: '/profile' });
-		user = res.user;
-	}
-	
-	update('app', { user, loading: false });
+	item.media = media ? media : IPFS_ROUTE + (await getType(item.contractId, item.title)).metadata.media;
+	set(ITEM_KEY + code, item)
+	update('item', item);
+	return item;
 };
 
 export const setDialog = (dialog) => async ({ update }) => {

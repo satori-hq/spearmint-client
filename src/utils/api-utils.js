@@ -48,6 +48,7 @@ export const fetchJson = ({ url, method = 'GET', body = {} }) => fetch(API_ROUTE
 		} catch (e) {
 			console.warn(e);
 		}
+		if (error.error) error = error.error
 		throw { status, error };
 	}
 	if (status === 204) {

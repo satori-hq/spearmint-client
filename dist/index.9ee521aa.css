@@ -69,6 +69,52 @@ section.footer > span {
   display: inline-block;
   margin: 0 1rem;
 }
+section.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 2000;
+  margin: 0;
+}
+section.modal .background, section.modal .content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+}
+section.modal .background {
+  background: rgba(0, 0, 0, 0.5);
+}
+section.modal .content {
+  background: none;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+section.modal .content .wrap {
+  max-width: 480px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1), 0 0 32px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  margin: 1rem;
+  background: #F8F8F8;
+  padding: 1rem;
+  padding-top: 2rem;
+  border-radius: 4px;
+  flex: 1;
+  position: relative;
+}
+section.modal .content .wrap .button {
+  justify-content: space-around;
+}
+section.modal .content .wrap .close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+}
 .claim {
   padding-top: 1rem;
 }
@@ -105,6 +151,7 @@ section.footer > span {
 }
 .claim h1 {
   font-family: "Merriweather", serif;
+  overflow-wrap: break-word;
 }
 .claim h1 > span > span.sparkle {
   background: linear-gradient(to right, #2FD2E9, #3A90F4, #B950E3);

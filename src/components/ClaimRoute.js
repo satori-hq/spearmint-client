@@ -1,8 +1,9 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 
-import { useHistory, pathAndArgs } from '../utils/history';
-import { getItem, setDialog } from '../state/app';
-import { initNear, walletUrl } from '../state/near';
+import { set } from '../utils/storage'
+import { pathAndArgs } from '../utils/history';
+import { ITEM_KEY, getItem, setDialog } from '../state/app';
+import { walletUrl } from '../state/near';
 import { fetchJson } from '../utils/api-utils';
 import confetti from 'canvas-confetti';
 
@@ -22,49 +23,39 @@ export const ClaimRoute = (props) => {
 	const { item } = state;
 	const { wallet, account } = state.near;
 	const { dialog, loading } = state.app;
-	const { path, args, pathArgs } = pathAndArgs();
-	console.log(pathArgs);
+	const { pathArgs } = pathAndArgs();
 
+	// accountId is either in searchParams or
 	let accountId = window.location.href.split('?accountId=')[1]?.split('&')[0];
 	if (account) {
 		accountId = account.accountId;
 	}
 
+	// code is the only path param e.g. /#/code
 	const code = pathArgs[0];
 
-	useHistory(() => {
-		window.scrollTo(0, 0);
-		update('app', {
-			href: window.location.href,
-			isMenuOpen: false,
-			isEditionOpen: false,
-		});
-	}, true);
-
 	const onMount = async () => {
-		dispatch(initNear());
-		if (code && code.length) {
-			update('app.loading', true);
-			const item = await dispatch(getItem(code));
-			update('app.loading', false);
-			if (!item) {
-				dispatch(setDialog({
-					msg: <div>
-						<p>There was an issue finding your item.</p>
-						<p>Please check the link that was sent to you and try again.</p>
-					</div>,
-					choices: ['Ok']
-				}));
-			}
+		if (!code || !code.length) return
+		update('app.loading', true);
+		const item = await dispatch(getItem(code));
+		update('app.loading', false);
+		if (!item) {
+			dispatch(setDialog({
+				msg: <div>
+					<p>There was an issue finding your item.</p>
+					<p>Please check the link that was sent to you and try again.</p>
+				</div>,
+				choices: ['Ok']
+			}));
 		}
 	};
 	useEffect(onMount, []);
 
 	const handleCreateWallet = async () => {
 		update('app.loading', true);
-		let response;
+		let res;
 		try {
-			response = await fetchJson({
+			res = await fetchJson({
 				url: '/claim/body-code/linkdrop',
 				method: 'POST',
 				body: {
@@ -76,7 +67,7 @@ export const ClaimRoute = (props) => {
 			console.warn(e);
 		}
 		update('app.loading', false);
-		if (!response.linkdrop) {
+		if (!res.linkdrop) {
 			return dispatch(setDialog({
 				msg: <div>
 					<p>There was an issue setting up your NEAR Account.</p>
@@ -85,15 +76,17 @@ export const ClaimRoute = (props) => {
 				choices: ['Ok']
 			}));
 		}
-		window.location = response.linkdrop;
+
+		// redirect user to wallet and then load item when they get back and mount this route
+		window.location = res.linkdrop;
 	};
 
 	const handleClaimNFT = async () => {
 		update('app.loading', true);
 		const { contractId, title } = item;
-		let response;
+		let res;
 		try {
-			response = await fetchJson({
+			res = await fetchJson({
 				url: `/claim/body-code/nft/${contractId}/${encodeURIComponent(title)}`,
 				method: 'POST',
 				body: {
@@ -104,17 +97,34 @@ export const ClaimRoute = (props) => {
 		} catch (e) {
 			console.warn(e);
 		}
-		dispatch(getItem(code));
+		if (!res.success) {
+			update('app.loading', false);
+			return dispatch(setDialog({
+				msg: <div>
+					<p>There was an issue claiming your NFT.</p>
+					<p>Please try again.</p>
+				</div>,
+				choices: ['Ok']
+			}));
+		}
+		/// TODO check if successful, get nftHash (from NEAR res) then update localStorage item to reflect this
+		set(ITEM_KEY + code, { ...item, nftHash: res.res.transaction.hash })
+
 		update('app.loading', false);
 		launchConfetti();
 	};
 
-	console.log(item);
 
+	console.log(item)
+
+
+	/// we don't want to render anything if there's no item ???
+	if (!item) return null;
 	const { ldHash: createdAccount, nftHash: claimedItem } = item || {};
 
 	return <Claim {...{
-		item, loading,
+		item,
+		loading,
 		createdAccount,
 		claimedItem,
 		accountId,

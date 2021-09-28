@@ -35,6 +35,7 @@
 	}
 	h1 {
 		font-family: 'Merriweather', serif;
+		overflow-wrap: break-word;
 		> span > span.sparkle {
 			background: $gradient;
 			-webkit-background-clip: text;

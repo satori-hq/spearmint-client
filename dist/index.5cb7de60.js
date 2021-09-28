@@ -22903,6 +22903,7 @@ var _react = require("react");
 var _reactDefault = parcelHelpers.interopDefault(_react);
 var _history = require("./utils/history");
 var _app = require("./state/app");
+var _dialog = require("./components/Dialog");
 var _loading = require("./components/Loading");
 var _footer = require("./components/Footer");
 var _claimRoute = require("./components/ClaimRoute");
@@ -22911,21 +22912,13 @@ var _s = $RefreshSig$();
 const App = ()=>{
     _s();
     const { state , dispatch , update  } = _react.useContext(_app.appStore);
-    const { dialog , loading , event  } = state.app;
+    const { loading , dialog  } = state.app;
     _history.useHistory(()=>{
         window.scrollTo(0, 0);
-        update('app', {
-            href: window.location.href,
-            isMenuOpen: false,
-            isEditionOpen: false
-        });
     }, true);
     const pathVars = _history.pathAndArgs();
-    const { path  } = pathVars;
-    const onMount = async ()=>{
-        await dispatch(_app.onAppMount(pathVars));
-    };
-    _react.useEffect(onMount, []);
+    _react.useEffect(()=>dispatch(_app.onAppMount(_history.pathAndArgs()))
+    , []);
     const props = {
         state,
         dispatch,
@@ -22934,10 +22927,18 @@ const App = ()=>{
     };
     return(/*#__PURE__*/ _jsxRuntime.jsxs(_jsxRuntime.Fragment, {
         children: [
+            dialog && /*#__PURE__*/ _jsxRuntime.jsx(_dialog.Dialog, {
+                ...dialog,
+                __source: {
+                    fileName: "src/App.js",
+                    lineNumber: 32
+                },
+                __self: undefined
+            }),
             loading && /*#__PURE__*/ _jsxRuntime.jsx(_loading.Loading, {
                 __source: {
                     fileName: "src/App.js",
-                    lineNumber: 40
+                    lineNumber: 33
                 },
                 __self: undefined
             }),
@@ -22945,14 +22946,14 @@ const App = ()=>{
                 ...props,
                 __source: {
                     fileName: "src/App.js",
-                    lineNumber: 41
+                    lineNumber: 34
                 },
                 __self: undefined
             }),
             /*#__PURE__*/ _jsxRuntime.jsx(_footer.Footer, {
                 __source: {
                     fileName: "src/App.js",
-                    lineNumber: 42
+                    lineNumber: 35
                 },
                 __self: undefined
             })
@@ -22972,7 +22973,7 @@ $RefreshReg$(_c, "App");
   window.$RefreshReg$ = prevRefreshReg;
   window.$RefreshSig$ = prevRefreshSig;
 }
-},{"react/jsx-runtime":"8xIwr","react":"6TuXu","./utils/history":"72M19","./state/app":"iwwmE","./components/Loading":"8KtEs","./components/Footer":"fWvfK","./components/ClaimRoute":"kvXYR","./App.scss":"gdJJH","@parcel/transformer-js/src/esmodule-helpers.js":"JacNc","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"5V79J"}],"72M19":[function(require,module,exports) {
+},{"react/jsx-runtime":"8xIwr","react":"6TuXu","./utils/history":"72M19","./state/app":"iwwmE","./components/Loading":"8KtEs","./components/Footer":"fWvfK","./components/ClaimRoute":"kvXYR","./App.scss":"gdJJH","@parcel/transformer-js/src/esmodule-helpers.js":"JacNc","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"5V79J","./components/Dialog":"cIZ2d"}],"72M19":[function(require,module,exports) {
 var $parcel$ReactRefreshHelpers$ff88 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
 var prevRefreshSig = window.$RefreshSig$;
@@ -23229,31 +23230,29 @@ parcelHelpers.export(exports, "IPFS_ROUTE", ()=>IPFS_ROUTE
 );
 parcelHelpers.export(exports, "API_SERVER", ()=>API_SERVER
 );
-parcelHelpers.export(exports, "CALLBACK_ID", ()=>CALLBACK_ID
+parcelHelpers.export(exports, "ITEM_KEY", ()=>ITEM_KEY
 );
 parcelHelpers.export(exports, "appStore", ()=>appStore
 );
 parcelHelpers.export(exports, "AppProvider", ()=>AppProvider
 );
-parcelHelpers.export(exports, "getItem", ()=>getItem
-);
 parcelHelpers.export(exports, "onAppMount", ()=>onAppMount
+);
+parcelHelpers.export(exports, "getItem", ()=>getItem
 );
 parcelHelpers.export(exports, "setDialog", ()=>setDialog
 );
 var _state = require("../utils/state");
 var _apiUtils = require("../utils/api-utils");
 var _storage = require("../utils/storage");
+var _near = require("./near");
 // example
 const initialState = {
     app: {
-        user: null,
         dialog: null,
         loading: true,
         mounted: false,
-        clicked: false,
-        event: {
-        }
+        clicked: false
     },
     item: null,
     near: {
@@ -23262,37 +23261,33 @@ const initialState = {
 const API_ROUTE = 'https://spearmint.satori.art/v1/';
 const IPFS_ROUTE = 'https://cloudflare-ipfs.com/ipfs/';
 const API_SERVER = undefined;
-const CALLBACK_ID = '__CALLBACK_ID';
+const ITEM_KEY = '__ITEM_';
 const { appStore , AppProvider  } = _state.State(initialState, 'app');
-const getItem = (code)=>async ({ update , getState , dispatch  })=>{
-        /// TODO should we throw this in a post with body call so logs don't scoop it?
-        const res = await _apiUtils.fetchJson({
-            url: `claim/${code}/get`
-        });
-        update('item', res);
-        return res;
-    }
-;
 const onAppMount = ({ path , args , pathArgs  })=>async ({ update , getState , dispatch  })=>{
-        let { accessToken  } = args;
-        if (accessToken && accessToken.length) {
-            _storage.set('accessToken', accessToken);
-            // history.push(path)
-            window.location.href = window.location.origin + '/#/r/' + _storage.get(CALLBACK_ID);
-            window.location.reload();
-        }
-        if (!accessToken) accessToken = _storage.get('accessToken', null);
-        let user;
-        if (accessToken) {
-            const res = await _apiUtils.fetchJsonWithTwitter({
-                url: '/profile'
-            });
-            user = res.user;
-        }
+        dispatch(_near.initNear());
         update('app', {
-            user,
             loading: false
         });
+    }
+;
+const getItem = (code)=>async ({ update , getState , dispatch  })=>{
+        let item = _storage.get(ITEM_KEY + code, null);
+        // media in localStorage?
+        const media = item?.media;
+        // get new item state
+        try {
+            /// TODO should we throw this in a post with body call so logs don't scoop it?
+            item = await _apiUtils.fetchJson({
+                url: `claim/${code}/get`
+            });
+        } catch (e) {
+            if (e.error !== 'no claim') throw e;
+        }
+        if (!item) return null;
+        item.media = media ? media : IPFS_ROUTE + (await _near.getType(item.contractId, item.title)).metadata.media;
+        _storage.set(ITEM_KEY + code, item);
+        update('item', item);
+        return item;
     }
 ;
 const setDialog = (dialog)=>async ({ update  })=>{
@@ -23316,7 +23311,7 @@ const setDialog = (dialog)=>async ({ update  })=>{
     }
 ; /// helpers
 
-},{"../utils/state":"jLBD9","../utils/api-utils":"cKglM","../utils/storage":"ejENA","@parcel/transformer-js/src/esmodule-helpers.js":"JacNc"}],"jLBD9":[function(require,module,exports) {
+},{"../utils/state":"jLBD9","../utils/api-utils":"cKglM","@parcel/transformer-js/src/esmodule-helpers.js":"JacNc","./near":"8Rcdt","../utils/storage":"ejENA"}],"jLBD9":[function(require,module,exports) {
 var $parcel$ReactRefreshHelpers$39eb = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
 var prevRefreshSig = window.$RefreshSig$;
@@ -23498,6 +23493,7 @@ const fetchJson = ({ url , method ='GET' , body ={
             } catch (e) {
                 console.warn(e);
             }
+            if (error.error) error = error.error;
             throw {
                 status,
                 error
@@ -37060,372 +37056,7 @@ const set = (k, v)=>localStorage.setItem(k, typeof v === 'string' ? v : JSON.str
 const del = (k)=>localStorage.removeItem(k)
 ;
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"JacNc"}],"8KtEs":[function(require,module,exports) {
-var $parcel$ReactRefreshHelpers$bb4b = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
-var prevRefreshReg = window.$RefreshReg$;
-var prevRefreshSig = window.$RefreshSig$;
-$parcel$ReactRefreshHelpers$bb4b.prelude(module);
-
-try {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "Loading", ()=>Loading
-);
-var _jsxRuntime = require("react/jsx-runtime");
-var _react = require("react");
-var _reactDefault = parcelHelpers.interopDefault(_react);
-var _loadingScss = require("./Loading.scss");
-const Loading = ({ className ='bg'  })=>/*#__PURE__*/ _jsxRuntime.jsx("div", {
-        className: [
-            "loading",
-            className
-        ].join(' '),
-        __source: {
-            fileName: "src/components/Loading.js",
-            lineNumber: 5
-        },
-        __self: undefined,
-        children: /*#__PURE__*/ _jsxRuntime.jsxs("div", {
-            className: "lds-loader",
-            __source: {
-                fileName: "src/components/Loading.js",
-                lineNumber: 6
-            },
-            __self: undefined,
-            children: [
-                /*#__PURE__*/ _jsxRuntime.jsx("div", {
-                    __source: {
-                        fileName: "src/components/Loading.js",
-                        lineNumber: 6
-                    },
-                    __self: undefined
-                }),
-                /*#__PURE__*/ _jsxRuntime.jsx("div", {
-                    __source: {
-                        fileName: "src/components/Loading.js",
-                        lineNumber: 6
-                    },
-                    __self: undefined
-                }),
-                /*#__PURE__*/ _jsxRuntime.jsx("div", {
-                    __source: {
-                        fileName: "src/components/Loading.js",
-                        lineNumber: 6
-                    },
-                    __self: undefined
-                })
-            ]
-        })
-    })
-;
-_c = Loading;
-var _c;
-$RefreshReg$(_c, "Loading");
-
-  $parcel$ReactRefreshHelpers$bb4b.postlude(module);
-} finally {
-  window.$RefreshReg$ = prevRefreshReg;
-  window.$RefreshSig$ = prevRefreshSig;
-}
-},{"react/jsx-runtime":"8xIwr","react":"6TuXu","./Loading.scss":"9ZWiu","@parcel/transformer-js/src/esmodule-helpers.js":"JacNc","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"5V79J"}],"9ZWiu":[function() {},{}],"fWvfK":[function(require,module,exports) {
-var $parcel$ReactRefreshHelpers$45af = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
-var prevRefreshReg = window.$RefreshReg$;
-var prevRefreshSig = window.$RefreshSig$;
-$parcel$ReactRefreshHelpers$45af.prelude(module);
-
-try {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "Footer", ()=>Footer
-);
-var _jsxRuntime = require("react/jsx-runtime");
-var _react = require("react");
-var _reactDefault = parcelHelpers.interopDefault(_react);
-var _logoFooterSvg = require("url:../img/logo-footer.svg");
-var _logoFooterSvgDefault = parcelHelpers.interopDefault(_logoFooterSvg);
-var _satoriFooterSvg = require("url:../img/satori-footer.svg");
-var _satoriFooterSvgDefault = parcelHelpers.interopDefault(_satoriFooterSvg);
-var _footerScss = require("./Footer.scss");
-const Footer = ()=>{
-    return(/*#__PURE__*/ _jsxRuntime.jsxs("section", {
-        className: "footer",
-        __source: {
-            fileName: "src/components/Footer.js",
-            lineNumber: 10
-        },
-        __self: undefined,
-        children: [
-            /*#__PURE__*/ _jsxRuntime.jsx("img", {
-                src: _logoFooterSvgDefault.default,
-                __source: {
-                    fileName: "src/components/Footer.js",
-                    lineNumber: 11
-                },
-                __self: undefined
-            }),
-            /*#__PURE__*/ _jsxRuntime.jsx("span", {
-                __source: {
-                    fileName: "src/components/Footer.js",
-                    lineNumber: 12
-                },
-                __self: undefined,
-                children: "By"
-            }),
-            /*#__PURE__*/ _jsxRuntime.jsx("img", {
-                src: _satoriFooterSvgDefault.default,
-                __source: {
-                    fileName: "src/components/Footer.js",
-                    lineNumber: 13
-                },
-                __self: undefined
-            })
-        ]
-    }));
-};
-_c = Footer;
-var _c;
-$RefreshReg$(_c, "Footer");
-
-  $parcel$ReactRefreshHelpers$45af.postlude(module);
-} finally {
-  window.$RefreshReg$ = prevRefreshReg;
-  window.$RefreshSig$ = prevRefreshSig;
-}
-},{"react/jsx-runtime":"8xIwr","react":"6TuXu","url:../img/logo-footer.svg":"3Capp","url:../img/satori-footer.svg":"82app","./Footer.scss":"boOGf","@parcel/transformer-js/src/esmodule-helpers.js":"JacNc","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"5V79J"}],"3Capp":[function(require,module,exports) {
-module.exports = require('./helpers/bundle-url').getBundleURL('cBz4w') + "logo-footer.bba12b55.svg";
-
-},{"./helpers/bundle-url":"8YnfL"}],"8YnfL":[function(require,module,exports) {
-"use strict";
-var bundleURL = {
-};
-function getBundleURLCached(id) {
-    var value = bundleURL[id];
-    if (!value) {
-        value = getBundleURL();
-        bundleURL[id] = value;
-    }
-    return value;
-}
-function getBundleURL() {
-    try {
-        throw new Error();
-    } catch (err) {
-        var matches = ('' + err.stack).match(/(https?|file|ftp):\/\/[^)\n]+/g);
-        if (matches) // The first two stack frames will be this function and getBundleURLCached.
-        // Use the 3rd one, which will be a runtime in the original bundle.
-        return getBaseURL(matches[2]);
-    }
-    return '/';
-}
-function getBaseURL(url) {
-    return ('' + url).replace(/^((?:https?|file|ftp):\/\/.+)\/[^/]+$/, '$1') + '/';
-} // TODO: Replace uses with `new URL(url).origin` when ie11 is no longer supported.
-function getOrigin(url) {
-    var matches = ('' + url).match(/(https?|file|ftp):\/\/[^/]+/);
-    if (!matches) throw new Error('Origin not found');
-    return matches[0];
-}
-exports.getBundleURL = getBundleURLCached;
-exports.getBaseURL = getBaseURL;
-exports.getOrigin = getOrigin;
-
-},{}],"82app":[function(require,module,exports) {
-module.exports = require('./helpers/bundle-url').getBundleURL('cBz4w') + "satori-footer.2f10a315.svg";
-
-},{"./helpers/bundle-url":"8YnfL"}],"boOGf":[function() {},{}],"kvXYR":[function(require,module,exports) {
-var $parcel$ReactRefreshHelpers$031d = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
-var prevRefreshReg = window.$RefreshReg$;
-var prevRefreshSig = window.$RefreshSig$;
-$parcel$ReactRefreshHelpers$031d.prelude(module);
-
-try {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "ClaimRoute", ()=>ClaimRoute
-);
-var _jsxRuntime = require("react/jsx-runtime");
-var _react = require("react");
-var _reactDefault = parcelHelpers.interopDefault(_react);
-var _history = require("../utils/history");
-var _app = require("../state/app");
-var _near = require("../state/near");
-var _apiUtils = require("../utils/api-utils");
-var _canvasConfetti = require("canvas-confetti");
-var _canvasConfettiDefault = parcelHelpers.interopDefault(_canvasConfetti);
-var _claim = require("./Claim");
-var _claimRouteScss = require("./ClaimRoute.scss");
-var _s = $RefreshSig$();
-const launchConfetti = ()=>_canvasConfettiDefault.default({
-        spread: 90,
-        startVelocity: 50,
-        gravity: 2,
-        colors: [
-            '#2FD2E9',
-            '#3A90F4',
-            '#B950E3'
-        ]
-    })
-;
-const ClaimRoute = (props)=>{
-    _s();
-    const { state , dispatch , update  } = props;
-    const { item  } = state;
-    const { wallet , account  } = state.near;
-    const { dialog , loading  } = state.app;
-    const { path , args , pathArgs  } = _history.pathAndArgs();
-    console.log(pathArgs);
-    let accountId = window.location.href.split('?accountId=')[1]?.split('&')[0];
-    if (account) accountId = account.accountId;
-    const code = pathArgs[0];
-    _history.useHistory(()=>{
-        window.scrollTo(0, 0);
-        update('app', {
-            href: window.location.href,
-            isMenuOpen: false,
-            isEditionOpen: false
-        });
-    }, true);
-    const onMount = async ()=>{
-        dispatch(_near.initNear());
-        if (code && code.length) {
-            update('app.loading', true);
-            const item1 = await dispatch(_app.getItem(code));
-            update('app.loading', false);
-            if (!item1) dispatch(_app.setDialog({
-                msg: /*#__PURE__*/ _jsxRuntime.jsxs("div", {
-                    __source: {
-                        fileName: "src/components/ClaimRoute.js",
-                        lineNumber: 52
-                    },
-                    __self: undefined,
-                    children: [
-                        /*#__PURE__*/ _jsxRuntime.jsx("p", {
-                            __source: {
-                                fileName: "src/components/ClaimRoute.js",
-                                lineNumber: 53
-                            },
-                            __self: undefined,
-                            children: "There was an issue finding your item."
-                        }),
-                        /*#__PURE__*/ _jsxRuntime.jsx("p", {
-                            __source: {
-                                fileName: "src/components/ClaimRoute.js",
-                                lineNumber: 54
-                            },
-                            __self: undefined,
-                            children: "Please check the link that was sent to you and try again."
-                        })
-                    ]
-                }),
-                choices: [
-                    'Ok'
-                ]
-            }));
-        }
-    };
-    _react.useEffect(onMount, []);
-    const handleCreateWallet = async ()=>{
-        update('app.loading', true);
-        let response;
-        try {
-            response = await _apiUtils.fetchJson({
-                url: '/claim/body-code/linkdrop',
-                method: 'POST',
-                body: {
-                    code,
-                    redirectUrl: encodeURIComponent(window.location.href)
-                }
-            });
-        } catch (e) {
-            console.warn(e);
-        }
-        update('app.loading', false);
-        if (!response.linkdrop) return dispatch(_app.setDialog({
-            msg: /*#__PURE__*/ _jsxRuntime.jsxs("div", {
-                __source: {
-                    fileName: "src/components/ClaimRoute.js",
-                    lineNumber: 81
-                },
-                __self: undefined,
-                children: [
-                    /*#__PURE__*/ _jsxRuntime.jsx("p", {
-                        __source: {
-                            fileName: "src/components/ClaimRoute.js",
-                            lineNumber: 82
-                        },
-                        __self: undefined,
-                        children: "There was an issue setting up your NEAR Account."
-                    }),
-                    /*#__PURE__*/ _jsxRuntime.jsx("p", {
-                        __source: {
-                            fileName: "src/components/ClaimRoute.js",
-                            lineNumber: 83
-                        },
-                        __self: undefined,
-                        children: "Please try again."
-                    })
-                ]
-            }),
-            choices: [
-                'Ok'
-            ]
-        }));
-        window.location = response.linkdrop;
-    };
-    const handleClaimNFT = async ()=>{
-        update('app.loading', true);
-        const { contractId , title  } = item;
-        let response;
-        try {
-            response = await _apiUtils.fetchJson({
-                url: `/claim/body-code/nft/${contractId}/${encodeURIComponent(title)}`,
-                method: 'POST',
-                body: {
-                    code,
-                    receiverId: accountId
-                }
-            });
-        } catch (e) {
-            console.warn(e);
-        }
-        dispatch(_app.getItem(code));
-        update('app.loading', false);
-        launchConfetti();
-    };
-    console.log(item);
-    const { ldHash: createdAccount , nftHash: claimedItem  } = item || {
-    };
-    return(/*#__PURE__*/ _jsxRuntime.jsx(_claim.Claim, {
-        item,
-        loading,
-        createdAccount,
-        claimedItem,
-        accountId,
-        walletUrl: _near.walletUrl,
-        dialog,
-        wallet,
-        handleCreateWallet,
-        handleClaimNFT,
-        __source: {
-            fileName: "src/components/ClaimRoute.js",
-            lineNumber: 116
-        },
-        __self: undefined
-    }));
-};
-_s(ClaimRoute, "qHEw2Te/ZZ/rlz4V622mswxB914=", false, function() {
-    return [_history.useHistory];
-});
-_c = ClaimRoute;
-var _c;
-$RefreshReg$(_c, "ClaimRoute");
-
-  $parcel$ReactRefreshHelpers$031d.postlude(module);
-} finally {
-  window.$RefreshReg$ = prevRefreshReg;
-  window.$RefreshSig$ = prevRefreshSig;
-}
-},{"react/jsx-runtime":"8xIwr","react":"6TuXu","../utils/history":"72M19","../state/app":"iwwmE","../state/near":"8Rcdt","../utils/api-utils":"cKglM","canvas-confetti":"2QXso","./Claim":"7vgrR","./ClaimRoute.scss":"7djRC","@parcel/transformer-js/src/esmodule-helpers.js":"JacNc","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"5V79J"}],"8Rcdt":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"JacNc"}],"8Rcdt":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "GAS", ()=>GAS
@@ -37630,7 +37261,402 @@ const getContractSigner = async ({ keyPair  })=>{
     };
 };
 
-},{"../config":"4dfwK","near-api-js":"65qL6","@parcel/transformer-js/src/esmodule-helpers.js":"JacNc"}],"2QXso":[function(require,module,exports) {
+},{"../config":"4dfwK","near-api-js":"65qL6","@parcel/transformer-js/src/esmodule-helpers.js":"JacNc"}],"8KtEs":[function(require,module,exports) {
+var $parcel$ReactRefreshHelpers$bb4b = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+$parcel$ReactRefreshHelpers$bb4b.prelude(module);
+
+try {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Loading", ()=>Loading
+);
+var _jsxRuntime = require("react/jsx-runtime");
+var _react = require("react");
+var _reactDefault = parcelHelpers.interopDefault(_react);
+var _loadingScss = require("./Loading.scss");
+const Loading = ({ className ='bg'  })=>/*#__PURE__*/ _jsxRuntime.jsx("div", {
+        className: [
+            "loading",
+            className
+        ].join(' '),
+        __source: {
+            fileName: "src/components/Loading.js",
+            lineNumber: 5
+        },
+        __self: undefined,
+        children: /*#__PURE__*/ _jsxRuntime.jsxs("div", {
+            className: "lds-loader",
+            __source: {
+                fileName: "src/components/Loading.js",
+                lineNumber: 6
+            },
+            __self: undefined,
+            children: [
+                /*#__PURE__*/ _jsxRuntime.jsx("div", {
+                    __source: {
+                        fileName: "src/components/Loading.js",
+                        lineNumber: 6
+                    },
+                    __self: undefined
+                }),
+                /*#__PURE__*/ _jsxRuntime.jsx("div", {
+                    __source: {
+                        fileName: "src/components/Loading.js",
+                        lineNumber: 6
+                    },
+                    __self: undefined
+                }),
+                /*#__PURE__*/ _jsxRuntime.jsx("div", {
+                    __source: {
+                        fileName: "src/components/Loading.js",
+                        lineNumber: 6
+                    },
+                    __self: undefined
+                })
+            ]
+        })
+    })
+;
+_c = Loading;
+var _c;
+$RefreshReg$(_c, "Loading");
+
+  $parcel$ReactRefreshHelpers$bb4b.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}
+},{"react/jsx-runtime":"8xIwr","react":"6TuXu","./Loading.scss":"9ZWiu","@parcel/transformer-js/src/esmodule-helpers.js":"JacNc","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"5V79J"}],"9ZWiu":[function() {},{}],"fWvfK":[function(require,module,exports) {
+var $parcel$ReactRefreshHelpers$45af = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+$parcel$ReactRefreshHelpers$45af.prelude(module);
+
+try {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Footer", ()=>Footer
+);
+var _jsxRuntime = require("react/jsx-runtime");
+var _react = require("react");
+var _reactDefault = parcelHelpers.interopDefault(_react);
+var _logoFooterSvg = require("url:../img/logo-footer.svg");
+var _logoFooterSvgDefault = parcelHelpers.interopDefault(_logoFooterSvg);
+var _satoriFooterSvg = require("url:../img/satori-footer.svg");
+var _satoriFooterSvgDefault = parcelHelpers.interopDefault(_satoriFooterSvg);
+var _footerScss = require("./Footer.scss");
+const Footer = ()=>{
+    return(/*#__PURE__*/ _jsxRuntime.jsxs("section", {
+        className: "footer",
+        __source: {
+            fileName: "src/components/Footer.js",
+            lineNumber: 10
+        },
+        __self: undefined,
+        children: [
+            /*#__PURE__*/ _jsxRuntime.jsx("img", {
+                src: _logoFooterSvgDefault.default,
+                __source: {
+                    fileName: "src/components/Footer.js",
+                    lineNumber: 11
+                },
+                __self: undefined
+            }),
+            /*#__PURE__*/ _jsxRuntime.jsx("span", {
+                __source: {
+                    fileName: "src/components/Footer.js",
+                    lineNumber: 12
+                },
+                __self: undefined,
+                children: "By"
+            }),
+            /*#__PURE__*/ _jsxRuntime.jsx("img", {
+                src: _satoriFooterSvgDefault.default,
+                __source: {
+                    fileName: "src/components/Footer.js",
+                    lineNumber: 13
+                },
+                __self: undefined
+            })
+        ]
+    }));
+};
+_c = Footer;
+var _c;
+$RefreshReg$(_c, "Footer");
+
+  $parcel$ReactRefreshHelpers$45af.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}
+},{"react/jsx-runtime":"8xIwr","react":"6TuXu","url:../img/logo-footer.svg":"3Capp","url:../img/satori-footer.svg":"82app","./Footer.scss":"boOGf","@parcel/transformer-js/src/esmodule-helpers.js":"JacNc","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"5V79J"}],"3Capp":[function(require,module,exports) {
+module.exports = require('./helpers/bundle-url').getBundleURL('cBz4w') + "logo-footer.bba12b55.svg";
+
+},{"./helpers/bundle-url":"8YnfL"}],"8YnfL":[function(require,module,exports) {
+"use strict";
+var bundleURL = {
+};
+function getBundleURLCached(id) {
+    var value = bundleURL[id];
+    if (!value) {
+        value = getBundleURL();
+        bundleURL[id] = value;
+    }
+    return value;
+}
+function getBundleURL() {
+    try {
+        throw new Error();
+    } catch (err) {
+        var matches = ('' + err.stack).match(/(https?|file|ftp):\/\/[^)\n]+/g);
+        if (matches) // The first two stack frames will be this function and getBundleURLCached.
+        // Use the 3rd one, which will be a runtime in the original bundle.
+        return getBaseURL(matches[2]);
+    }
+    return '/';
+}
+function getBaseURL(url) {
+    return ('' + url).replace(/^((?:https?|file|ftp):\/\/.+)\/[^/]+$/, '$1') + '/';
+} // TODO: Replace uses with `new URL(url).origin` when ie11 is no longer supported.
+function getOrigin(url) {
+    var matches = ('' + url).match(/(https?|file|ftp):\/\/[^/]+/);
+    if (!matches) throw new Error('Origin not found');
+    return matches[0];
+}
+exports.getBundleURL = getBundleURLCached;
+exports.getBaseURL = getBaseURL;
+exports.getOrigin = getOrigin;
+
+},{}],"82app":[function(require,module,exports) {
+module.exports = require('./helpers/bundle-url').getBundleURL('cBz4w') + "satori-footer.2f10a315.svg";
+
+},{"./helpers/bundle-url":"8YnfL"}],"boOGf":[function() {},{}],"kvXYR":[function(require,module,exports) {
+var $parcel$ReactRefreshHelpers$031d = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+$parcel$ReactRefreshHelpers$031d.prelude(module);
+
+try {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "ClaimRoute", ()=>ClaimRoute
+);
+var _jsxRuntime = require("react/jsx-runtime");
+var _react = require("react");
+var _reactDefault = parcelHelpers.interopDefault(_react);
+var _storage = require("../utils/storage");
+var _history = require("../utils/history");
+var _app = require("../state/app");
+var _near = require("../state/near");
+var _apiUtils = require("../utils/api-utils");
+var _canvasConfetti = require("canvas-confetti");
+var _canvasConfettiDefault = parcelHelpers.interopDefault(_canvasConfetti);
+var _claim = require("./Claim");
+var _claimRouteScss = require("./ClaimRoute.scss");
+var _s = $RefreshSig$();
+const launchConfetti = ()=>_canvasConfettiDefault.default({
+        spread: 90,
+        startVelocity: 50,
+        gravity: 2,
+        colors: [
+            '#2FD2E9',
+            '#3A90F4',
+            '#B950E3'
+        ]
+    })
+;
+const ClaimRoute = (props)=>{
+    _s();
+    const { state , dispatch , update  } = props;
+    const { item  } = state;
+    const { wallet , account  } = state.near;
+    const { dialog , loading  } = state.app;
+    const { pathArgs  } = _history.pathAndArgs();
+    // accountId is either in searchParams or
+    let accountId = window.location.href.split('?accountId=')[1]?.split('&')[0];
+    if (account) accountId = account.accountId;
+    // code is the only path param e.g. /#/code
+    const code = pathArgs[0];
+    const onMount = async ()=>{
+        if (!code || !code.length) return;
+        update('app.loading', true);
+        const item1 = await dispatch(_app.getItem(code));
+        update('app.loading', false);
+        if (!item1) dispatch(_app.setDialog({
+            msg: /*#__PURE__*/ _jsxRuntime.jsxs("div", {
+                __source: {
+                    fileName: "src/components/ClaimRoute.js",
+                    lineNumber: 44
+                },
+                __self: undefined,
+                children: [
+                    /*#__PURE__*/ _jsxRuntime.jsx("p", {
+                        __source: {
+                            fileName: "src/components/ClaimRoute.js",
+                            lineNumber: 45
+                        },
+                        __self: undefined,
+                        children: "There was an issue finding your item."
+                    }),
+                    /*#__PURE__*/ _jsxRuntime.jsx("p", {
+                        __source: {
+                            fileName: "src/components/ClaimRoute.js",
+                            lineNumber: 46
+                        },
+                        __self: undefined,
+                        children: "Please check the link that was sent to you and try again."
+                    })
+                ]
+            }),
+            choices: [
+                'Ok'
+            ]
+        }));
+    };
+    _react.useEffect(onMount, []);
+    const handleCreateWallet = async ()=>{
+        update('app.loading', true);
+        let res;
+        try {
+            res = await _apiUtils.fetchJson({
+                url: '/claim/body-code/linkdrop',
+                method: 'POST',
+                body: {
+                    code,
+                    redirectUrl: encodeURIComponent(window.location.href)
+                }
+            });
+        } catch (e) {
+            console.warn(e);
+        }
+        update('app.loading', false);
+        if (!res.linkdrop) return dispatch(_app.setDialog({
+            msg: /*#__PURE__*/ _jsxRuntime.jsxs("div", {
+                __source: {
+                    fileName: "src/components/ClaimRoute.js",
+                    lineNumber: 72
+                },
+                __self: undefined,
+                children: [
+                    /*#__PURE__*/ _jsxRuntime.jsx("p", {
+                        __source: {
+                            fileName: "src/components/ClaimRoute.js",
+                            lineNumber: 73
+                        },
+                        __self: undefined,
+                        children: "There was an issue setting up your NEAR Account."
+                    }),
+                    /*#__PURE__*/ _jsxRuntime.jsx("p", {
+                        __source: {
+                            fileName: "src/components/ClaimRoute.js",
+                            lineNumber: 74
+                        },
+                        __self: undefined,
+                        children: "Please try again."
+                    })
+                ]
+            }),
+            choices: [
+                'Ok'
+            ]
+        }));
+        // redirect user to wallet and then load item when they get back and mount this route
+        window.location = res.linkdrop;
+    };
+    const handleClaimNFT = async ()=>{
+        update('app.loading', true);
+        const { contractId , title  } = item;
+        let res;
+        try {
+            res = await _apiUtils.fetchJson({
+                url: `/claim/body-code/nft/${contractId}/${encodeURIComponent(title)}`,
+                method: 'POST',
+                body: {
+                    code,
+                    receiverId: accountId
+                }
+            });
+        } catch (e) {
+            console.warn(e);
+        }
+        if (!res.success) {
+            update('app.loading', false);
+            return dispatch(_app.setDialog({
+                msg: /*#__PURE__*/ _jsxRuntime.jsxs("div", {
+                    __source: {
+                        fileName: "src/components/ClaimRoute.js",
+                        lineNumber: 103
+                    },
+                    __self: undefined,
+                    children: [
+                        /*#__PURE__*/ _jsxRuntime.jsx("p", {
+                            __source: {
+                                fileName: "src/components/ClaimRoute.js",
+                                lineNumber: 104
+                            },
+                            __self: undefined,
+                            children: "There was an issue claiming your NFT."
+                        }),
+                        /*#__PURE__*/ _jsxRuntime.jsx("p", {
+                            __source: {
+                                fileName: "src/components/ClaimRoute.js",
+                                lineNumber: 105
+                            },
+                            __self: undefined,
+                            children: "Please try again."
+                        })
+                    ]
+                }),
+                choices: [
+                    'Ok'
+                ]
+            }));
+        }
+        /// TODO check if successful, get nftHash (from NEAR res) then update localStorage item to reflect this
+        _storage.set(_app.ITEM_KEY + code, {
+            ...item,
+            nftHash: res.res.transaction.hash
+        });
+        update('app.loading', false);
+        launchConfetti();
+    };
+    console.log(item);
+    /// we don't want to render anything if there's no item ???
+    if (!item) return null;
+    const { ldHash: createdAccount , nftHash: claimedItem  } = item || {
+    };
+    return(/*#__PURE__*/ _jsxRuntime.jsx(_claim.Claim, {
+        item,
+        loading,
+        createdAccount,
+        claimedItem,
+        accountId,
+        walletUrl: _near.walletUrl,
+        dialog,
+        wallet,
+        handleCreateWallet,
+        handleClaimNFT,
+        __source: {
+            fileName: "src/components/ClaimRoute.js",
+            lineNumber: 125
+        },
+        __self: undefined
+    }));
+};
+_s(ClaimRoute, "OD7bBpZva5O2jO+Puf00hKivP7c=");
+_c = ClaimRoute;
+var _c;
+$RefreshReg$(_c, "ClaimRoute");
+
+  $parcel$ReactRefreshHelpers$031d.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}
+},{"react/jsx-runtime":"8xIwr","react":"6TuXu","../utils/history":"72M19","../state/app":"iwwmE","../state/near":"8Rcdt","../utils/api-utils":"cKglM","canvas-confetti":"2QXso","./Claim":"7vgrR","./ClaimRoute.scss":"7djRC","@parcel/transformer-js/src/esmodule-helpers.js":"JacNc","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"5V79J","../utils/storage":"ejENA"}],"2QXso":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "create", ()=>create
@@ -38111,256 +38137,250 @@ parcelHelpers.export(exports, "Claim", ()=>Claim
 var _jsxRuntime = require("react/jsx-runtime");
 var _react = require("react");
 var _reactDefault = parcelHelpers.interopDefault(_react);
-var _near = require("../state/near");
 var _dialog = require("./Dialog");
 var _claimScss = require("./Claim.scss");
-var _s = $RefreshSig$();
-const ipfsGateway = 'https://cloudflare-ipfs.com/ipfs/';
-const Layout = ({ media , title , paras , buttons =[]  })=>/*#__PURE__*/ _jsxRuntime.jsxs("div", {
-        className: "layout",
+const Layout = ({ media , title , paras , buttons =[]  })=>/*#__PURE__*/ _jsxRuntime.jsx("div", {
+        className: "claim",
         __source: {
             fileName: "src/components/Claim.js",
-            lineNumber: 11
+            lineNumber: 6
         },
         __self: undefined,
-        children: [
-            /*#__PURE__*/ _jsxRuntime.jsx("div", {
-                __source: {
-                    fileName: "src/components/Claim.js",
-                    lineNumber: 12
-                },
-                __self: undefined,
-                children: /*#__PURE__*/ _jsxRuntime.jsx("img", {
-                    src: media,
-                    crossOrigin: "*",
+        children: /*#__PURE__*/ _jsxRuntime.jsxs("div", {
+            className: "layout",
+            __source: {
+                fileName: "src/components/Claim.js",
+                lineNumber: 7
+            },
+            __self: undefined,
+            children: [
+                /*#__PURE__*/ _jsxRuntime.jsx("div", {
                     __source: {
                         fileName: "src/components/Claim.js",
-                        lineNumber: 13
+                        lineNumber: 8
                     },
-                    __self: undefined
-                })
-            }),
-            /*#__PURE__*/ _jsxRuntime.jsxs("div", {
-                __source: {
-                    fileName: "src/components/Claim.js",
-                    lineNumber: 15
-                },
-                __self: undefined,
-                children: [
-                    title && /*#__PURE__*/ _jsxRuntime.jsx("h1", {
+                    __self: undefined,
+                    children: /*#__PURE__*/ _jsxRuntime.jsx("img", {
+                        src: media,
+                        crossOrigin: "*",
                         __source: {
                             fileName: "src/components/Claim.js",
-                            lineNumber: 16
+                            lineNumber: 9
                         },
-                        __self: undefined,
-                        children: title
-                    }),
-                    /*#__PURE__*/ _jsxRuntime.jsx("div", {
-                        __source: {
-                            fileName: "src/components/Claim.js",
-                            lineNumber: 17
-                        },
-                        __self: undefined,
-                        children: paras.length && paras.map((p, i)=>/*#__PURE__*/ _jsxRuntime.jsx("p", {
-                                __source: {
-                                    fileName: "src/components/Claim.js",
-                                    lineNumber: 18
-                                },
-                                __self: undefined,
-                                children: p
-                            }, i)
-                        )
-                    }),
-                    /*#__PURE__*/ _jsxRuntime.jsx("div", {
-                        __source: {
-                            fileName: "src/components/Claim.js",
-                            lineNumber: 20
-                        },
-                        __self: undefined,
-                        children: buttons.length > 0 && buttons.map(({ label , className , onClick  }, i)=>label && /*#__PURE__*/ _jsxRuntime.jsx("button", {
-                                className: className,
-                                onClick: onClick,
-                                __source: {
-                                    fileName: "src/components/Claim.js",
-                                    lineNumber: 22
-                                },
-                                __self: undefined,
-                                children: label
-                            }, i)
-                        )
+                        __self: undefined
                     })
-                ]
-            })
-        ]
+                }),
+                /*#__PURE__*/ _jsxRuntime.jsxs("div", {
+                    __source: {
+                        fileName: "src/components/Claim.js",
+                        lineNumber: 11
+                    },
+                    __self: undefined,
+                    children: [
+                        title && /*#__PURE__*/ _jsxRuntime.jsx("h1", {
+                            __source: {
+                                fileName: "src/components/Claim.js",
+                                lineNumber: 12
+                            },
+                            __self: undefined,
+                            children: title
+                        }),
+                        /*#__PURE__*/ _jsxRuntime.jsx("div", {
+                            __source: {
+                                fileName: "src/components/Claim.js",
+                                lineNumber: 13
+                            },
+                            __self: undefined,
+                            children: paras.length && paras.map((p, i)=>/*#__PURE__*/ _jsxRuntime.jsx("p", {
+                                    __source: {
+                                        fileName: "src/components/Claim.js",
+                                        lineNumber: 14
+                                    },
+                                    __self: undefined,
+                                    children: p
+                                }, i)
+                            )
+                        }),
+                        /*#__PURE__*/ _jsxRuntime.jsx("div", {
+                            __source: {
+                                fileName: "src/components/Claim.js",
+                                lineNumber: 16
+                            },
+                            __self: undefined,
+                            children: buttons.length > 0 && buttons.map(({ label , className , onClick  }, i)=>label && /*#__PURE__*/ _jsxRuntime.jsx("button", {
+                                    className: className,
+                                    onClick: onClick,
+                                    __source: {
+                                        fileName: "src/components/Claim.js",
+                                        lineNumber: 18
+                                    },
+                                    __self: undefined,
+                                    children: label
+                                }, i)
+                            )
+                        })
+                    ]
+                })
+            ]
+        })
     })
 ;
 _c = Layout;
 const Claim = (props)=>{
-    _s();
-    const { item , loading , createdAccount , claimedItem , accountId , walletUrl , dialog , wallet , handleCreateWallet , handleClaimNFT ,  } = props;
-    const [media, setMedia] = _react.useState(null);
-    const loadItem = async ()=>{
-        if (!item) return;
-        const { contractId , title  } = item;
-        setMedia(ipfsGateway + (await _near.getType(contractId, title)).metadata.media);
-    };
-    _react.useEffect(loadItem, [
-        item
-    ]);
-    if (claimedItem) return accountId ? /*#__PURE__*/ _jsxRuntime.jsx("div", {
-        className: "claim",
+    const { item , item: { media  } , loading , createdAccount , claimedItem , accountId , walletUrl , dialog , wallet , handleCreateWallet , handleClaimNFT ,  } = props;
+    if (claimedItem) return accountId ? /*#__PURE__*/ _jsxRuntime.jsx(Layout, {
+        title: /*#__PURE__*/ _jsxRuntime.jsxs("span", {
+            children: [
+                "Congratulations ",
+                /*#__PURE__*/ _jsxRuntime.jsxs("span", {
+                    className: "sparkle",
+                    children: [
+                        accountId,
+                        "!"
+                    ]
+                })
+            ]
+        }),
+        media,
+        paras: [
+            'You claimed your NFT!'
+        ],
+        buttons: [
+            {
+                label: 'View NFT in NEAR Wallet',
+                onClick: ()=>window.open(walletUrl + '/?tab=collectibles')
+            }
+        ],
         __source: {
             fileName: "src/components/Claim.js",
-            lineNumber: 50
+            lineNumber: 40
         },
-        __self: undefined,
-        children: /*#__PURE__*/ _jsxRuntime.jsx(Layout, {
-            title: /*#__PURE__*/ _jsxRuntime.jsxs("span", {
-                children: [
-                    "Congratulations ",
-                    /*#__PURE__*/ _jsxRuntime.jsxs("span", {
-                        className: "sparkle",
-                        children: [
-                            accountId,
-                            "!"
-                        ]
-                    })
-                ]
-            }),
-            media,
-            paras: [
-                'You claimed your NFT!'
-            ],
-            buttons: [
-                {
-                    label: 'View NFT in NEAR Wallet',
-                    onClick: ()=>window.open(walletUrl + '/?tab=collectibles')
-                }
-            ],
-            __source: {
-                fileName: "src/components/Claim.js",
-                lineNumber: 52
-            },
-            __self: undefined
-        })
-    }) : /*#__PURE__*/ _jsxRuntime.jsx("div", {
-        className: "claim",
+        __self: undefined
+    }) : /*#__PURE__*/ _jsxRuntime.jsx(Layout, {
+        title: /*#__PURE__*/ _jsxRuntime.jsx("span", {
+            children: "NFT claimed!"
+        }),
+        media,
+        paras: [
+            'This NFT was already claimed.'
+        ],
+        buttons: [
+            {
+                label: 'View NFTs in your NEAR Wallet',
+                onClick: ()=>window.open(walletUrl + '/?tab=collectibles')
+            }
+        ],
         __source: {
             fileName: "src/components/Claim.js",
-            lineNumber: 65
+            lineNumber: 53
         },
-        __self: undefined,
-        children: /*#__PURE__*/ _jsxRuntime.jsx(Layout, {
-            title: /*#__PURE__*/ _jsxRuntime.jsx("span", {
-                children: "NFT claimed!"
-            }),
-            media,
-            paras: [
-                'This NFT was already claimed.'
-            ],
-            buttons: [
-                {
-                    label: 'View NFTs in your NEAR Wallet',
-                    onClick: ()=>window.open(walletUrl + '/?tab=collectibles')
-                }
-            ],
-            __source: {
-                fileName: "src/components/Claim.js",
-                lineNumber: 67
-            },
-            __self: undefined
-        })
+        __self: undefined
     });
-    if (!item) return null;
+    if (!item) return !loading && /*#__PURE__*/ _jsxRuntime.jsxs("div", {
+        __source: {
+            fileName: "src/components/Claim.js",
+            lineNumber: 68
+        },
+        __self: undefined,
+        children: [
+            /*#__PURE__*/ _jsxRuntime.jsx("h1", {
+                __source: {
+                    fileName: "src/components/Claim.js",
+                    lineNumber: 69
+                },
+                __self: undefined,
+                children: "Satori"
+            }),
+            /*#__PURE__*/ _jsxRuntime.jsx("p", {
+                __source: {
+                    fileName: "src/components/Claim.js",
+                    lineNumber: 70
+                },
+                __self: undefined,
+                children: "Check the link sent to you and try again."
+            })
+        ]
+    });
     return(/*#__PURE__*/ _jsxRuntime.jsxs(_jsxRuntime.Fragment, {
         children: [
             dialog && /*#__PURE__*/ _jsxRuntime.jsx(_dialog.Dialog, {
                 ...dialog,
                 __source: {
                     fileName: "src/components/Claim.js",
-                    lineNumber: 91
+                    lineNumber: 75
                 },
                 __self: undefined
             }),
-            /*#__PURE__*/ _jsxRuntime.jsx("div", {
-                className: "claim",
+            !accountId ? /*#__PURE__*/ _jsxRuntime.jsx(Layout, {
+                title: /*#__PURE__*/ _jsxRuntime.jsxs("span", {
+                    children: [
+                        "Congratulations you ",
+                        /*#__PURE__*/ _jsxRuntime.jsx("span", {
+                            className: "sparkle",
+                            children: "rock!"
+                        })
+                    ]
+                }),
+                media,
+                paras: [
+                    'You need to connect or create a NEAR Wallet so we know where to send your NFT!'
+                ],
+                buttons: [
+                    {
+                        label: 'Connect Wallet',
+                        onClick: ()=>wallet.signIn()
+                    },
+                    !createdAccount ? {
+                        label: 'Create Wallet',
+                        className: 'outline',
+                        onClick: handleCreateWallet
+                    } : {
+                    }
+                ],
                 __source: {
                     fileName: "src/components/Claim.js",
-                    lineNumber: 92
+                    lineNumber: 78
                 },
-                __self: undefined,
-                children: !accountId ? /*#__PURE__*/ _jsxRuntime.jsx(Layout, {
-                    title: /*#__PURE__*/ _jsxRuntime.jsxs("span", {
-                        children: [
-                            "Congratulations you ",
-                            /*#__PURE__*/ _jsxRuntime.jsx("span", {
-                                className: "sparkle",
-                                children: "rock!"
-                            })
-                        ]
-                    }),
-                    media,
-                    paras: [
-                        'You need to connect or create a NEAR Wallet so we know where to send your NFT!'
-                    ],
-                    buttons: [
-                        {
-                            label: 'Connect Wallet',
-                            onClick: ()=>wallet.signIn()
-                        },
-                        !createdAccount ? {
-                            label: 'Create Wallet',
-                            className: 'outline',
-                            onClick: handleCreateWallet
-                        } : {
-                        }
-                    ],
-                    __source: {
-                        fileName: "src/components/Claim.js",
-                        lineNumber: 95
+                __self: undefined
+            }) : /*#__PURE__*/ _jsxRuntime.jsx(Layout, {
+                title: /*#__PURE__*/ _jsxRuntime.jsxs("span", {
+                    children: [
+                        "Wallet ",
+                        /*#__PURE__*/ _jsxRuntime.jsx("span", {
+                            className: "sparkle",
+                            children: accountId
+                        }),
+                        " connected!"
+                    ]
+                }),
+                media,
+                paras: [
+                    'You can now claim your NFT!'
+                ],
+                buttons: [
+                    {
+                        label: 'Claim NFT',
+                        onClick: handleClaimNFT
                     },
-                    __self: undefined
-                }) : /*#__PURE__*/ _jsxRuntime.jsx(Layout, {
-                    title: /*#__PURE__*/ _jsxRuntime.jsxs("span", {
-                        children: [
-                            "Wallet ",
-                            /*#__PURE__*/ _jsxRuntime.jsx("span", {
-                                className: "sparkle",
-                                children: accountId
-                            }),
-                            " connected!"
-                        ]
-                    }),
-                    media,
-                    paras: [
-                        'You can now claim your NFT!'
-                    ],
-                    buttons: [
-                        {
-                            label: 'Claim NFT',
-                            onClick: handleClaimNFT
-                        },
-                        !createdAccount ? {
-                            label: 'Or Change Wallet',
-                            className: 'text',
-                            onClick: ()=>{
-                                wallet.signOut();
-                                window.location.href = window.location.href.split('?')[0];
-                            }
-                        } : {
+                    !createdAccount ? {
+                        label: 'Or Change Wallet',
+                        className: 'text',
+                        onClick: ()=>{
+                            wallet.signOut();
+                            window.location.href = window.location.href.split('?')[0];
                         }
-                    ],
-                    __source: {
-                        fileName: "src/components/Claim.js",
-                        lineNumber: 111
-                    },
-                    __self: undefined
-                })
+                    } : {
+                    }
+                ],
+                __source: {
+                    fileName: "src/components/Claim.js",
+                    lineNumber: 94
+                },
+                __self: undefined
             })
         ]
     }));
 };
-_s(Claim, "bRW3fefH4BTUDk0+xuPKeAPSUEU=");
 _c1 = Claim;
 var _c, _c1;
 $RefreshReg$(_c, "Layout");
@@ -38371,7 +38391,7 @@ $RefreshReg$(_c1, "Claim");
   window.$RefreshReg$ = prevRefreshReg;
   window.$RefreshSig$ = prevRefreshSig;
 }
-},{"react/jsx-runtime":"8xIwr","react":"6TuXu","../state/near":"8Rcdt","./Dialog":"cIZ2d","./Claim.scss":"kO12h","@parcel/transformer-js/src/esmodule-helpers.js":"JacNc","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"5V79J"}],"cIZ2d":[function(require,module,exports) {
+},{"react/jsx-runtime":"8xIwr","react":"6TuXu","./Dialog":"cIZ2d","./Claim.scss":"kO12h","@parcel/transformer-js/src/esmodule-helpers.js":"JacNc","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"5V79J"}],"cIZ2d":[function(require,module,exports) {
 var $parcel$ReactRefreshHelpers$50c9 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
 var prevRefreshSig = window.$RefreshSig$;
@@ -38387,6 +38407,7 @@ var _react = require("react");
 var _reactDefault = parcelHelpers.interopDefault(_react);
 var _closeSvg = require("url:../img/close.svg");
 var _closeSvgDefault = parcelHelpers.interopDefault(_closeSvg);
+var _dialogScss = require("./Dialog.scss");
 var _s = $RefreshSig$();
 const Dialog = ({ resolve , reject , msg , choices , input , acceptLabel ='Accept' , onClose , onCloseButton , onCancelled , info =false ,  })=>{
     _s();
@@ -38410,7 +38431,7 @@ const Dialog = ({ resolve , reject , msg , choices , input , acceptLabel ='Accep
         ,
         __source: {
             fileName: "src/components/Dialog.js",
-            lineNumber: 32
+            lineNumber: 33
         },
         __self: undefined,
         children: [
@@ -38418,7 +38439,7 @@ const Dialog = ({ resolve , reject , msg , choices , input , acceptLabel ='Accep
                 className: "background",
                 __source: {
                     fileName: "src/components/Dialog.js",
-                    lineNumber: 33
+                    lineNumber: 34
                 },
                 __self: undefined
             }),
@@ -38426,7 +38447,7 @@ const Dialog = ({ resolve , reject , msg , choices , input , acceptLabel ='Accep
                 className: "content",
                 __source: {
                     fileName: "src/components/Dialog.js",
-                    lineNumber: 34
+                    lineNumber: 35
                 },
                 __self: undefined,
                 children: /*#__PURE__*/ _jsxRuntime.jsxs("div", {
@@ -38437,7 +38458,7 @@ const Dialog = ({ resolve , reject , msg , choices , input , acceptLabel ='Accep
                     },
                     __source: {
                         fileName: "src/components/Dialog.js",
-                        lineNumber: 35
+                        lineNumber: 36
                     },
                     __self: undefined,
                     children: [
@@ -38447,14 +38468,14 @@ const Dialog = ({ resolve , reject , msg , choices , input , acceptLabel ='Accep
                             ,
                             __source: {
                                 fileName: "src/components/Dialog.js",
-                                lineNumber: 41
+                                lineNumber: 42
                             },
                             __self: undefined,
                             children: /*#__PURE__*/ _jsxRuntime.jsx("img", {
                                 src: _closeSvgDefault.default,
                                 __source: {
                                     fileName: "src/components/Dialog.js",
-                                    lineNumber: 42
+                                    lineNumber: 43
                                 },
                                 __self: undefined
                             })
@@ -38462,7 +38483,7 @@ const Dialog = ({ resolve , reject , msg , choices , input , acceptLabel ='Accep
                         /*#__PURE__*/ _jsxRuntime.jsx("div", {
                             __source: {
                                 fileName: "src/components/Dialog.js",
-                                lineNumber: 45
+                                lineNumber: 46
                             },
                             __self: undefined,
                             children: msg
@@ -38470,7 +38491,7 @@ const Dialog = ({ resolve , reject , msg , choices , input , acceptLabel ='Accep
                         input && input.map(({ placeholder , type ='text'  }, i)=>/*#__PURE__*/ _jsxRuntime.jsx("div", {
                                 __source: {
                                     fileName: "src/components/Dialog.js",
-                                    lineNumber: 49
+                                    lineNumber: 50
                                 },
                                 __self: undefined,
                                 children: /*#__PURE__*/ _jsxRuntime.jsx("input", {
@@ -38481,7 +38502,7 @@ const Dialog = ({ resolve , reject , msg , choices , input , acceptLabel ='Accep
                                     ,
                                     __source: {
                                         fileName: "src/components/Dialog.js",
-                                        lineNumber: 50
+                                        lineNumber: 51
                                     },
                                     __self: undefined
                                 })
@@ -38492,7 +38513,7 @@ const Dialog = ({ resolve , reject , msg , choices , input , acceptLabel ='Accep
                                 ,
                                 __source: {
                                     fileName: "src/components/Dialog.js",
-                                    lineNumber: 58
+                                    lineNumber: 59
                                 },
                                 __self: undefined,
                                 children: label
@@ -38503,7 +38524,7 @@ const Dialog = ({ resolve , reject , msg , choices , input , acceptLabel ='Accep
                             onClick: resolveInput,
                             __source: {
                                 fileName: "src/components/Dialog.js",
-                                lineNumber: 60
+                                lineNumber: 61
                             },
                             __self: undefined,
                             children: acceptLabel
@@ -38513,7 +38534,7 @@ const Dialog = ({ resolve , reject , msg , choices , input , acceptLabel ='Accep
                             onClick: handleClose,
                             __source: {
                                 fileName: "src/components/Dialog.js",
-                                lineNumber: 64
+                                lineNumber: 65
                             },
                             __self: undefined,
                             children: Object.keys(onCloseButton)[0]
@@ -38534,9 +38555,9 @@ $RefreshReg$(_c, "Dialog");
   window.$RefreshReg$ = prevRefreshReg;
   window.$RefreshSig$ = prevRefreshSig;
 }
-},{"react/jsx-runtime":"8xIwr","react":"6TuXu","url:../img/close.svg":"dhPAR","@parcel/transformer-js/src/esmodule-helpers.js":"JacNc","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"5V79J"}],"dhPAR":[function(require,module,exports) {
+},{"react/jsx-runtime":"8xIwr","react":"6TuXu","url:../img/close.svg":"dhPAR","@parcel/transformer-js/src/esmodule-helpers.js":"JacNc","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"5V79J","./Dialog.scss":"h43lP"}],"dhPAR":[function(require,module,exports) {
 module.exports = require('./helpers/bundle-url').getBundleURL('cBz4w') + "close.90231740.svg";
 
-},{"./helpers/bundle-url":"8YnfL"}],"kO12h":[function() {},{}],"7djRC":[function() {},{}],"gdJJH":[function() {},{}]},["2rAXy","8Ye98","6cF5V"], "6cF5V", "parcelRequiree8ef")
+},{"./helpers/bundle-url":"8YnfL"}],"h43lP":[function() {},{}],"kO12h":[function() {},{}],"7djRC":[function() {},{}],"gdJJH":[function() {},{}]},["2rAXy","8Ye98","6cF5V"], "6cF5V", "parcelRequiree8ef")
 
 //# sourceMappingURL=index.5cb7de60.js.map

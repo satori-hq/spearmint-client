@@ -2,7 +2,7 @@ $width: 480px;
 $margin: 1rem;
 $bg: #F8F8F8;
 $double: 2rem;
-$shadow: 0 0 8px #000000, 0 0 32px rgba(0, 0, 0, 0.5);
+$shadow: 0 0 8px rgba(0, 0, 0, 0.1), 0 0 32px rgba(0, 0, 0, 0.1);
 
 /// dialog
 
@@ -18,10 +18,12 @@ section.modal {
         position: absolute;
         top: 0;
         left: 0;
-        background: rgba(0, 0, 0, 0.5);
         width: 100vw;
         height: 100vh;
     }
+	.background {
+		background: rgba(0, 0, 0, 0.5);
+	}
     .content {
         background: none;
         position: relative;

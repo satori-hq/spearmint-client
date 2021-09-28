@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import Close from 'url:../img/close.svg';
+import './Dialog.scss'
 
 export const Dialog = ({
 	resolve, reject,
