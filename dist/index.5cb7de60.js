@@ -23427,54 +23427,25 @@ parcelHelpers.export(exports, "contractName", ()=>contractName
 );
 parcelHelpers.export(exports, "contractMethods", ()=>contractMethods
 );
+parcelHelpers.export(exports, "fetchJson", ()=>fetchJson
+);
 parcelHelpers.export(exports, "getSignature", ()=>getSignature
 );
 parcelHelpers.export(exports, "bodyWithSig", ()=>bodyWithSig
-);
-parcelHelpers.export(exports, "fetchJsonWithTwitter", ()=>fetchJsonWithTwitter
-);
-parcelHelpers.export(exports, "fetchJson", ()=>fetchJson
 );
 var _config = require("../config");
 var _configDefault = parcelHelpers.interopDefault(_config);
 var _storage = require("../utils/storage");
 var Buffer = require("buffer").Buffer;
-window.ENV = 'testnet';
 const { GAS , networkId , nodeUrl , walletUrl , nameSuffix , contractName , contractMethods  } = _configDefault.default('testnet');
-const getSignature = async (account, key)=>{
-    const { accountId  } = account;
-    const block = await account.connection.provider.block({
-        finality: 'final'
-    });
-    const blockNumber = block.header.height.toString();
-    const signer = account.inMemorySigner || account.connection.signer;
-    const signed = await signer.signMessage(Buffer.from(blockNumber), accountId, networkId);
-    const blockNumberSignature = Buffer.from(signed.signature).toString('base64');
-    return {
-        blockNumber,
-        blockNumberSignature
-    };
-};
-const bodyWithSig = async (account, contractId, body)=>{
-    console.log(account, contractId, body);
-    return {
-        ...body,
-        accountId: account.accountId,
-        contractId,
-        ...await getSignature(account)
-    };
-};
-const fetchJsonWithTwitter = ({ url , method , body  })=>{
-    const accessToken = _storage.get('accessToken', null);
-    if (!accessToken) return;
-    return fetchJson({
-        url: url + '?accessToken=' + accessToken,
-        method,
-        body
-    });
-};
+let ENV = window.location.host.split('.')[0]?.split('-')[1];
+/// TODO switch to mainnet
+if (!ENV) ENV = window.location.hash.split('?ENV=')[1];
+if (!ENV) ENV = 'testnet';
+const API_URL = `https://spearmint-${ENV}.near.workers.dev/v1/`;
+console.log(API_URL);
 const fetchJson = ({ url , method ='GET' , body ={
-}  })=>fetch(`https://spearmint-${window.ENV}.near.workers.dev/v1/` + url, {
+}  })=>fetch(/http/g.test(url) ? url : API_URL + url, {
         method,
         headers: new Headers({
             'content-type': 'application/json'
@@ -23499,6 +23470,29 @@ const fetchJson = ({ url , method ='GET' , body ={
         return await res.json();
     })
 ;
+const getSignature = async (account, key)=>{
+    const { accountId  } = account;
+    const block = await account.connection.provider.block({
+        finality: 'final'
+    });
+    const blockNumber = block.header.height.toString();
+    const signer = account.inMemorySigner || account.connection.signer;
+    const signed = await signer.signMessage(Buffer.from(blockNumber), accountId, networkId);
+    const blockNumberSignature = Buffer.from(signed.signature).toString('base64');
+    return {
+        blockNumber,
+        blockNumberSignature
+    };
+};
+const bodyWithSig = async (account, contractId, body)=>{
+    console.log(account, contractId, body);
+    return {
+        ...body,
+        accountId: account.accountId,
+        contractId,
+        ...await getSignature(account)
+    };
+};
 
 },{"buffer":"bpNHw","../config":"4dfwK","../utils/storage":"ejENA","@parcel/transformer-js/src/esmodule-helpers.js":"JacNc"}],"bpNHw":[function(require,module,exports) {
 /*!
@@ -37476,8 +37470,6 @@ const ClaimRoute = (props)=>{
     if (account) accountId = account.accountId;
     // code is the only path param e.g. /#/code
     const code = pathArgs[0];
-    const ENV = pathArgs[1];
-    if (ENV) window.ENV = ENV; /// e.g. /#/code/dev
     const onMount = async ()=>{
         if (!code || !code.length) return;
         update('app.loading', true);
@@ -37487,14 +37479,14 @@ const ClaimRoute = (props)=>{
             msg: /*#__PURE__*/ _jsxRuntime.jsxs("div", {
                 __source: {
                     fileName: "src/components/ClaimRoute.js",
-                    lineNumber: 46
+                    lineNumber: 44
                 },
                 __self: undefined,
                 children: [
                     /*#__PURE__*/ _jsxRuntime.jsx("p", {
                         __source: {
                             fileName: "src/components/ClaimRoute.js",
-                            lineNumber: 47
+                            lineNumber: 45
                         },
                         __self: undefined,
                         children: "There was an issue finding your item."
@@ -37502,7 +37494,7 @@ const ClaimRoute = (props)=>{
                     /*#__PURE__*/ _jsxRuntime.jsx("p", {
                         __source: {
                             fileName: "src/components/ClaimRoute.js",
-                            lineNumber: 48
+                            lineNumber: 46
                         },
                         __self: undefined,
                         children: "Please check the link that was sent to you and try again."
@@ -37535,14 +37527,14 @@ const ClaimRoute = (props)=>{
             msg: /*#__PURE__*/ _jsxRuntime.jsxs("div", {
                 __source: {
                     fileName: "src/components/ClaimRoute.js",
-                    lineNumber: 74
+                    lineNumber: 72
                 },
                 __self: undefined,
                 children: [
                     /*#__PURE__*/ _jsxRuntime.jsx("p", {
                         __source: {
                             fileName: "src/components/ClaimRoute.js",
-                            lineNumber: 75
+                            lineNumber: 73
                         },
                         __self: undefined,
                         children: "There was an issue setting up your NEAR Account."
@@ -37550,7 +37542,7 @@ const ClaimRoute = (props)=>{
                     /*#__PURE__*/ _jsxRuntime.jsx("p", {
                         __source: {
                             fileName: "src/components/ClaimRoute.js",
-                            lineNumber: 76
+                            lineNumber: 74
                         },
                         __self: undefined,
                         children: "Please try again."
@@ -37586,14 +37578,14 @@ const ClaimRoute = (props)=>{
                 msg: /*#__PURE__*/ _jsxRuntime.jsxs("div", {
                     __source: {
                         fileName: "src/components/ClaimRoute.js",
-                        lineNumber: 105
+                        lineNumber: 103
                     },
                     __self: undefined,
                     children: [
                         /*#__PURE__*/ _jsxRuntime.jsx("p", {
                             __source: {
                                 fileName: "src/components/ClaimRoute.js",
-                                lineNumber: 106
+                                lineNumber: 104
                             },
                             __self: undefined,
                             children: "There was an issue claiming your NFT."
@@ -37601,7 +37593,7 @@ const ClaimRoute = (props)=>{
                         /*#__PURE__*/ _jsxRuntime.jsx("p", {
                             __source: {
                                 fileName: "src/components/ClaimRoute.js",
-                                lineNumber: 107
+                                lineNumber: 105
                             },
                             __self: undefined,
                             children: "Please try again."
@@ -37641,7 +37633,7 @@ const ClaimRoute = (props)=>{
         handleClaimNFT,
         __source: {
             fileName: "src/components/ClaimRoute.js",
-            lineNumber: 128
+            lineNumber: 126
         },
         __self: undefined
     }));

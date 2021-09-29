@@ -1,13 +1,43 @@
 import getConfig from '../config';
 import { get } from '../utils/storage';
 
-window.ENV = 'testnet'
-
 export const {
 	GAS,
 	networkId, nodeUrl, walletUrl, nameSuffix,
 	contractName, contractMethods
 } = getConfig('testnet');
+
+let ENV = window.location.host.split('.')[0]?.split('-')[1]
+/// TODO switch to mainnet
+if (!ENV) ENV = window.location.hash.split('?ENV=')[1]
+if (!ENV) ENV = 'testnet'
+const API_URL = `https://spearmint-${ENV}.near.workers.dev/v1/`
+
+console.log(API_URL)
+
+export const fetchJson = ({ url, method = 'GET', body = {} }) =>
+	fetch(/http/g.test(url) ? url : API_URL + url, {
+		method,
+		headers: new Headers({ 'content-type': 'application/json' }),
+		body: method === 'POST' ? JSON.stringify(body) : undefined
+	}).then(async (res) => {
+		const { ok, status } = res;
+		if (!ok) {
+			let error = await res.text();
+			try {
+				error = JSON.parse(error);
+			} catch (e) {
+				console.warn(e);
+			}
+			if (error.error) error = error.error
+			throw { status, error };
+		}
+		if (status === 204) {
+			return null;
+		}
+		return await res.json();
+	});
+
 
 export const getSignature = async (account, key) => {
 	const { accountId } = account;
@@ -28,31 +58,3 @@ export const bodyWithSig = async (account, contractId, body) => {
 		...(await getSignature(account))
 	};
 };
-
-export const fetchJsonWithTwitter = ({ url, method, body }) => {
-	const accessToken = get('accessToken', null);
-	if (!accessToken) return;
-	return fetchJson({ url: url + '?accessToken=' + accessToken, method, body });
-};
-
-export const fetchJson = ({ url, method = 'GET', body = {} }) => fetch(`https://spearmint-${window.ENV}.near.workers.dev/v1/` + url, {
-	method,
-	headers: new Headers({ 'content-type': 'application/json' }),
-	body: method === 'POST' ? JSON.stringify(body) : undefined
-}).then(async (res) => {
-	const { ok, status } = res;
-	if (!ok) {
-		let error = await res.text();
-		try {
-			error = JSON.parse(error);
-		} catch (e) {
-			console.warn(e);
-		}
-		if (error.error) error = error.error
-		throw { status, error };
-	}
-	if (status === 204) {
-		return null;
-	}
-	return await res.json();
-});

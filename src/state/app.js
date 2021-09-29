@@ -21,6 +21,7 @@ export const ITEM_KEY = '__ITEM_';
 export const { appStore, AppProvider } = State(initialState, 'app');
 
 export const onAppMount = ({ path, args, pathArgs }) => async ({ update, getState, dispatch }) => {
+	
 	dispatch(initNear());
 	update('app', { loading: false });
 };
