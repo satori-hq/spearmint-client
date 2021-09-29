@@ -7,10 +7,11 @@ export const {
 	contractName, contractMethods
 } = getConfig('testnet');
 
+/// Where are we?
 let ENV = window.location.host.split('.')[0]?.split('-')[1]
 /// TODO switch to mainnet
 if (!ENV) ENV = window.location.hash.split('?ENV=')[1]
-if (!ENV) ENV = 'testnet'
+if (!ENV || !/dev|testnet|mainnet/.test(ENV)) ENV = 'testnet'
 const API_URL = `https://spearmint-${ENV}.near.workers.dev/v1/`
 
 console.log(API_URL)
