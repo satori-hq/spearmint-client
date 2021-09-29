@@ -33,6 +33,8 @@ export const ClaimRoute = (props) => {
 
 	// code is the only path param e.g. /#/code
 	const code = pathArgs[0];
+	const ENV = pathArgs[1]
+	if (ENV) window.ENV = ENV; /// e.g. /#/code/dev
 
 	const onMount = async () => {
 		if (!code || !code.length) return

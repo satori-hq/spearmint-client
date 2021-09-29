@@ -23224,8 +23224,6 @@ function registerExportsForReactRefresh(module) {
 },{"react-refresh/runtime":"fNmB3"}],"iwwmE":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "API_ROUTE", ()=>API_ROUTE
-);
 parcelHelpers.export(exports, "IPFS_ROUTE", ()=>IPFS_ROUTE
 );
 parcelHelpers.export(exports, "API_SERVER", ()=>API_SERVER
@@ -23258,7 +23256,6 @@ const initialState = {
     near: {
     }
 };
-const API_ROUTE = 'https://spearmint.satori.art/v1/';
 const IPFS_ROUTE = 'https://cloudflare-ipfs.com/ipfs/';
 const API_SERVER = undefined;
 const ITEM_KEY = '__ITEM_';
@@ -23440,10 +23437,9 @@ parcelHelpers.export(exports, "fetchJson", ()=>fetchJson
 );
 var _config = require("../config");
 var _configDefault = parcelHelpers.interopDefault(_config);
-var _nearApiJs = require("near-api-js");
 var _storage = require("../utils/storage");
-var _app = require("../state/app");
 var Buffer = require("buffer").Buffer;
+window.ENV = 'testnet';
 const { GAS , networkId , nodeUrl , walletUrl , nameSuffix , contractName , contractMethods  } = _configDefault.default('testnet');
 const getSignature = async (account, key)=>{
     const { accountId  } = account;
@@ -23478,7 +23474,7 @@ const fetchJsonWithTwitter = ({ url , method , body  })=>{
     });
 };
 const fetchJson = ({ url , method ='GET' , body ={
-}  })=>fetch(_app.API_ROUTE + url, {
+}  })=>fetch(`https://spearmint-${window.ENV}.near.workers.dev/v1/` + url, {
         method,
         headers: new Headers({
             'content-type': 'application/json'
@@ -23504,7 +23500,7 @@ const fetchJson = ({ url , method ='GET' , body ={
     })
 ;
 
-},{"buffer":"bpNHw","../config":"4dfwK","near-api-js":"65qL6","../utils/storage":"ejENA","../state/app":"iwwmE","@parcel/transformer-js/src/esmodule-helpers.js":"JacNc"}],"bpNHw":[function(require,module,exports) {
+},{"buffer":"bpNHw","../config":"4dfwK","../utils/storage":"ejENA","@parcel/transformer-js/src/esmodule-helpers.js":"JacNc"}],"bpNHw":[function(require,module,exports) {
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -24937,7 +24933,124 @@ module.exports = function getConfig(network = 'mainnet') {
     return config;
 };
 
-},{}],"65qL6":[function(require,module,exports) {
+},{}],"ejENA":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "get", ()=>get
+);
+parcelHelpers.export(exports, "set", ()=>set
+);
+parcelHelpers.export(exports, "del", ()=>del
+);
+const get = (k, d = {
+})=>{
+    let v = localStorage.getItem(k);
+    if (typeof d !== 'object') return v;
+    try {
+        return JSON.parse(v || JSON.stringify(d));
+    } catch (e) {
+        return v;
+    }
+};
+const set = (k, v)=>localStorage.setItem(k, typeof v === 'string' ? v : JSON.stringify(v))
+;
+const del = (k)=>localStorage.removeItem(k)
+;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"JacNc"}],"8Rcdt":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "GAS", ()=>GAS
+);
+parcelHelpers.export(exports, "networkId", ()=>networkId
+);
+parcelHelpers.export(exports, "nodeUrl", ()=>nodeUrl
+);
+parcelHelpers.export(exports, "walletUrl", ()=>walletUrl
+);
+parcelHelpers.export(exports, "nameSuffix", ()=>nameSuffix
+);
+parcelHelpers.export(exports, "contractId", ()=>contractId
+);
+parcelHelpers.export(exports, "Account", ()=>Account
+);
+parcelHelpers.export(exports, "formatNearAmount", ()=>formatNearAmount
+);
+parcelHelpers.export(exports, "parseNearAmount", ()=>parseNearAmount
+);
+parcelHelpers.export(exports, "initNear", ()=>initNear
+);
+parcelHelpers.export(exports, "getType", ()=>getType
+);
+parcelHelpers.export(exports, "getTypeSupply", ()=>getTypeSupply
+);
+var _config = require("../config");
+var _configDefault = parcelHelpers.interopDefault(_config);
+var _nearApiJs = require("near-api-js");
+var _nearUtils = require("../utils/near-utils");
+const { GAS , networkId , nodeUrl , walletUrl , nameSuffix , contractId ,  } = _configDefault.default('testnet');
+const { Account , utils: { format: { formatNearAmount , parseNearAmount  }  }  } = _nearApiJs;
+const initNear = ()=>async ({ update , getState , dispatch  })=>{
+        const { near , wallet  } = await _nearUtils.getWallet();
+        wallet.signIn = ()=>{
+            console.log(contractId);
+            wallet.requestSignIn(contractId, 'Blah Blah');
+        };
+        const signOut = wallet.signOut;
+        wallet.signOut = ()=>{
+            signOut.call(wallet);
+            update('near', {
+                wallet: null,
+                account: null
+            });
+        };
+        wallet.signedIn = wallet.isSignedIn();
+        let account;
+        if (wallet.signedIn) {
+            account = wallet.account();
+            wallet.balance = formatNearAmount((await wallet.account().getAccountBalance()).available, 2);
+            await update('near', {
+                near,
+                wallet,
+                account
+            });
+        }
+        await update('near', {
+            near,
+            wallet,
+            account
+        });
+        return {
+            near,
+            wallet,
+            account
+        };
+    }
+;
+const getType = async (contractId1, token_type_title)=>{
+    const account = await _nearUtils.getAccount(contractId1);
+    try {
+        return await account.viewFunction(contractId1, 'nft_get_type', {
+            token_type_title
+        });
+    } catch (e) {
+        console.warn('error getType', e);
+        return null;
+    }
+};
+const getTypeSupply = async (contractId1, token_type_title)=>{
+    const account = await _nearUtils.getAccount(contractId1);
+    try {
+        return await account.viewFunction(contractId1, 'nft_supply_for_type', {
+            token_type_title
+        });
+    } catch (e) {
+        console.warn('error getTypeSupply', e);
+        return 0;
+    }
+};
+
+},{"../config":"4dfwK","near-api-js":"65qL6","../utils/near-utils":"huFVe","@parcel/transformer-js/src/esmodule-helpers.js":"JacNc"}],"65qL6":[function(require,module,exports) {
 "use strict";
 var __createBinding = this && this.__createBinding || (Object.create ? function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -37032,124 +37145,7 @@ module.exports = function() {
     };
 };
 
-},{"u3":"jbZEv","./prepareStackTrace":"36eP8"}],"ejENA":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "get", ()=>get
-);
-parcelHelpers.export(exports, "set", ()=>set
-);
-parcelHelpers.export(exports, "del", ()=>del
-);
-const get = (k, d = {
-})=>{
-    let v = localStorage.getItem(k);
-    if (typeof d !== 'object') return v;
-    try {
-        return JSON.parse(v || JSON.stringify(d));
-    } catch (e) {
-        return v;
-    }
-};
-const set = (k, v)=>localStorage.setItem(k, typeof v === 'string' ? v : JSON.stringify(v))
-;
-const del = (k)=>localStorage.removeItem(k)
-;
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"JacNc"}],"8Rcdt":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "GAS", ()=>GAS
-);
-parcelHelpers.export(exports, "networkId", ()=>networkId
-);
-parcelHelpers.export(exports, "nodeUrl", ()=>nodeUrl
-);
-parcelHelpers.export(exports, "walletUrl", ()=>walletUrl
-);
-parcelHelpers.export(exports, "nameSuffix", ()=>nameSuffix
-);
-parcelHelpers.export(exports, "contractId", ()=>contractId
-);
-parcelHelpers.export(exports, "Account", ()=>Account
-);
-parcelHelpers.export(exports, "formatNearAmount", ()=>formatNearAmount
-);
-parcelHelpers.export(exports, "parseNearAmount", ()=>parseNearAmount
-);
-parcelHelpers.export(exports, "initNear", ()=>initNear
-);
-parcelHelpers.export(exports, "getType", ()=>getType
-);
-parcelHelpers.export(exports, "getTypeSupply", ()=>getTypeSupply
-);
-var _config = require("../config");
-var _configDefault = parcelHelpers.interopDefault(_config);
-var _nearApiJs = require("near-api-js");
-var _nearUtils = require("../utils/near-utils");
-const { GAS , networkId , nodeUrl , walletUrl , nameSuffix , contractId ,  } = _configDefault.default('testnet');
-const { Account , utils: { format: { formatNearAmount , parseNearAmount  }  }  } = _nearApiJs;
-const initNear = ()=>async ({ update , getState , dispatch  })=>{
-        const { near , wallet  } = await _nearUtils.getWallet();
-        wallet.signIn = ()=>{
-            console.log(contractId);
-            wallet.requestSignIn(contractId, 'Blah Blah');
-        };
-        const signOut = wallet.signOut;
-        wallet.signOut = ()=>{
-            signOut.call(wallet);
-            update('near', {
-                wallet: null,
-                account: null
-            });
-        };
-        wallet.signedIn = wallet.isSignedIn();
-        let account;
-        if (wallet.signedIn) {
-            account = wallet.account();
-            wallet.balance = formatNearAmount((await wallet.account().getAccountBalance()).available, 2);
-            await update('near', {
-                near,
-                wallet,
-                account
-            });
-        }
-        await update('near', {
-            near,
-            wallet,
-            account
-        });
-        return {
-            near,
-            wallet,
-            account
-        };
-    }
-;
-const getType = async (contractId1, token_type_title)=>{
-    const account = await _nearUtils.getAccount(contractId1);
-    try {
-        return await account.viewFunction(contractId1, 'nft_get_type', {
-            token_type_title
-        });
-    } catch (e) {
-        console.warn('error getType', e);
-        return null;
-    }
-};
-const getTypeSupply = async (contractId1, token_type_title)=>{
-    const account = await _nearUtils.getAccount(contractId1);
-    try {
-        return await account.viewFunction(contractId1, 'nft_supply_for_type', {
-            token_type_title
-        });
-    } catch (e) {
-        console.warn('error getTypeSupply', e);
-        return 0;
-    }
-};
-
-},{"../config":"4dfwK","near-api-js":"65qL6","../utils/near-utils":"huFVe","@parcel/transformer-js/src/esmodule-helpers.js":"JacNc"}],"huFVe":[function(require,module,exports) {
+},{"u3":"jbZEv","./prepareStackTrace":"36eP8"}],"huFVe":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "GAS", ()=>GAS
@@ -37480,6 +37476,8 @@ const ClaimRoute = (props)=>{
     if (account) accountId = account.accountId;
     // code is the only path param e.g. /#/code
     const code = pathArgs[0];
+    const ENV = pathArgs[1];
+    if (ENV) window.ENV = ENV; /// e.g. /#/code/dev
     const onMount = async ()=>{
         if (!code || !code.length) return;
         update('app.loading', true);
@@ -37489,14 +37487,14 @@ const ClaimRoute = (props)=>{
             msg: /*#__PURE__*/ _jsxRuntime.jsxs("div", {
                 __source: {
                     fileName: "src/components/ClaimRoute.js",
-                    lineNumber: 44
+                    lineNumber: 46
                 },
                 __self: undefined,
                 children: [
                     /*#__PURE__*/ _jsxRuntime.jsx("p", {
                         __source: {
                             fileName: "src/components/ClaimRoute.js",
-                            lineNumber: 45
+                            lineNumber: 47
                         },
                         __self: undefined,
                         children: "There was an issue finding your item."
@@ -37504,7 +37502,7 @@ const ClaimRoute = (props)=>{
                     /*#__PURE__*/ _jsxRuntime.jsx("p", {
                         __source: {
                             fileName: "src/components/ClaimRoute.js",
-                            lineNumber: 46
+                            lineNumber: 48
                         },
                         __self: undefined,
                         children: "Please check the link that was sent to you and try again."
@@ -37537,14 +37535,14 @@ const ClaimRoute = (props)=>{
             msg: /*#__PURE__*/ _jsxRuntime.jsxs("div", {
                 __source: {
                     fileName: "src/components/ClaimRoute.js",
-                    lineNumber: 72
+                    lineNumber: 74
                 },
                 __self: undefined,
                 children: [
                     /*#__PURE__*/ _jsxRuntime.jsx("p", {
                         __source: {
                             fileName: "src/components/ClaimRoute.js",
-                            lineNumber: 73
+                            lineNumber: 75
                         },
                         __self: undefined,
                         children: "There was an issue setting up your NEAR Account."
@@ -37552,7 +37550,7 @@ const ClaimRoute = (props)=>{
                     /*#__PURE__*/ _jsxRuntime.jsx("p", {
                         __source: {
                             fileName: "src/components/ClaimRoute.js",
-                            lineNumber: 74
+                            lineNumber: 76
                         },
                         __self: undefined,
                         children: "Please try again."
@@ -37588,14 +37586,14 @@ const ClaimRoute = (props)=>{
                 msg: /*#__PURE__*/ _jsxRuntime.jsxs("div", {
                     __source: {
                         fileName: "src/components/ClaimRoute.js",
-                        lineNumber: 103
+                        lineNumber: 105
                     },
                     __self: undefined,
                     children: [
                         /*#__PURE__*/ _jsxRuntime.jsx("p", {
                             __source: {
                                 fileName: "src/components/ClaimRoute.js",
-                                lineNumber: 104
+                                lineNumber: 106
                             },
                             __self: undefined,
                             children: "There was an issue claiming your NFT."
@@ -37603,7 +37601,7 @@ const ClaimRoute = (props)=>{
                         /*#__PURE__*/ _jsxRuntime.jsx("p", {
                             __source: {
                                 fileName: "src/components/ClaimRoute.js",
-                                lineNumber: 105
+                                lineNumber: 107
                             },
                             __self: undefined,
                             children: "Please try again."
@@ -37643,7 +37641,7 @@ const ClaimRoute = (props)=>{
         handleClaimNFT,
         __source: {
             fileName: "src/components/ClaimRoute.js",
-            lineNumber: 126
+            lineNumber: 128
         },
         __self: undefined
     }));

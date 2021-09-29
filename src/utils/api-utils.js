@@ -1,7 +1,7 @@
 import getConfig from '../config';
-import * as nearAPI from 'near-api-js';
 import { get } from '../utils/storage';
-import { API_ROUTE } from '../state/app';
+
+window.ENV = 'testnet'
 
 export const {
 	GAS,
@@ -35,7 +35,7 @@ export const fetchJsonWithTwitter = ({ url, method, body }) => {
 	return fetchJson({ url: url + '?accessToken=' + accessToken, method, body });
 };
 
-export const fetchJson = ({ url, method = 'GET', body = {} }) => fetch(API_ROUTE + url, {
+export const fetchJson = ({ url, method = 'GET', body = {} }) => fetch(`https://spearmint-${window.ENV}.near.workers.dev/v1/` + url, {
 	method,
 	headers: new Headers({ 'content-type': 'application/json' }),
 	body: method === 'POST' ? JSON.stringify(body) : undefined

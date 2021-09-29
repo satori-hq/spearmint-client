@@ -15,7 +15,6 @@ const initialState = {
 	near: {},
 };
 
-export const API_ROUTE = 'https://spearmint.satori.art/v1/';
 export const IPFS_ROUTE = 'https://cloudflare-ipfs.com/ipfs/';
 export const API_SERVER = process.env.REACT_APP_API_SERVER;
 export const ITEM_KEY = '__ITEM_';
