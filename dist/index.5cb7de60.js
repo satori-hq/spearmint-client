@@ -24995,7 +24995,7 @@ const initNear = ()=>async ({ update , getState , dispatch  })=>{
         wallet.signOut = ()=>{
             signOut.call(wallet);
             update('near', {
-                wallet: null,
+                wallet,
                 account: null
             });
         };
