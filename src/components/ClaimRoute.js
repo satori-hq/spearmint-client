@@ -93,7 +93,7 @@ export const ClaimRoute = (props) => {
 	const handleClaimNFT = async () => {
 		update('app.loading', true);
 		const { contractId, title } = item;
-		let res;
+		let res, error;
 		try {
 			res = await fetchJson({
 				url: `/claim/body-code/nft/${contractId}/${encodeURIComponent(title)}`,
@@ -105,9 +105,10 @@ export const ClaimRoute = (props) => {
 			});
 		} catch (e) {
 			console.warn(e);
+			error = e
 		}
+		update('app.loading', false);
 		if (!res.success) {
-			update('app.loading', false);
 			return dispatch(setDialog({
 				msg: <div>
 					<p>There was an issue claiming your NFT.</p>

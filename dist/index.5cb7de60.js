@@ -37570,39 +37570,37 @@ const ClaimRoute = (props)=>{
         } catch (e) {
             console.warn(e);
         }
-        if (!res.success) {
-            update('app.loading', false);
-            return dispatch(_app.setDialog({
-                msg: /*#__PURE__*/ _jsxRuntime.jsxs("div", {
-                    __source: {
-                        fileName: "src/components/ClaimRoute.js",
-                        lineNumber: 112
-                    },
-                    __self: undefined,
-                    children: [
-                        /*#__PURE__*/ _jsxRuntime.jsx("p", {
-                            __source: {
-                                fileName: "src/components/ClaimRoute.js",
-                                lineNumber: 113
-                            },
-                            __self: undefined,
-                            children: "There was an issue claiming your NFT."
-                        }),
-                        /*#__PURE__*/ _jsxRuntime.jsx("p", {
-                            __source: {
-                                fileName: "src/components/ClaimRoute.js",
-                                lineNumber: 114
-                            },
-                            __self: undefined,
-                            children: "Please try again."
-                        })
-                    ]
-                }),
-                choices: [
-                    'Ok'
+        update('app.loading', false);
+        if (!res.success) return dispatch(_app.setDialog({
+            msg: /*#__PURE__*/ _jsxRuntime.jsxs("div", {
+                __source: {
+                    fileName: "src/components/ClaimRoute.js",
+                    lineNumber: 112
+                },
+                __self: undefined,
+                children: [
+                    /*#__PURE__*/ _jsxRuntime.jsx("p", {
+                        __source: {
+                            fileName: "src/components/ClaimRoute.js",
+                            lineNumber: 113
+                        },
+                        __self: undefined,
+                        children: "There was an issue claiming your NFT."
+                    }),
+                    /*#__PURE__*/ _jsxRuntime.jsx("p", {
+                        __source: {
+                            fileName: "src/components/ClaimRoute.js",
+                            lineNumber: 114
+                        },
+                        __self: undefined,
+                        children: "Please try again."
+                    })
                 ]
-            }));
-        }
+            }),
+            choices: [
+                'Ok'
+            ]
+        }));
         /// TODO check if successful, get nftHash (from NEAR res) then update localStorage item to reflect this
         const newItem = {
             ...item,
