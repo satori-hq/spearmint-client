@@ -32,7 +32,7 @@ const App = () => {
 			{ dialog && <Dialog {...dialog} />}
 			{ loading && <Loading />}
 			<ClaimRoute {...props} />
-			<Footer />
+			{/* <Footer /> */}
 		</>
 	);
 };

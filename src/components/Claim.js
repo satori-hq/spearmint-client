@@ -6,7 +6,13 @@ const Layout = ({ media, title, paras, buttons = [] }) =>
 	<div className="claim">
 		<div className="layout">
 			<div>
-				<img src={media} crossOrigin="*" />
+				<div className='background-border'>
+					<div className='background'>
+						<div className='image'>
+							<img src={media} crossOrigin="*" />
+						</div>
+					</div>
+				</div>
 			</div>
 			<div>
 				{title && <h1>{title}</h1>}

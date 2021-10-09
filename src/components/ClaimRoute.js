@@ -5,6 +5,7 @@ import { pathAndArgs } from '../utils/history';
 import { ITEM_KEY, getItem, setDialog } from '../state/app';
 import { walletUrl } from '../state/near';
 import { fetchJson } from '../utils/api-utils';
+import { themes } from '../themes/themes';
 import confetti from 'canvas-confetti';
 
 import { Claim } from './Claim';
@@ -35,12 +36,20 @@ export const ClaimRoute = (props) => {
 	const code = pathArgs[0];
 
 	const onMount = async () => {
-		if (!code || !code.length) return
 		update('app.loading', true);
+		if (!code || !code.length) return
 		const item = await dispatch(getItem(code));
+
+		/// lazy import theme here
+		const { theme } = item
+		if (theme && theme !== 'default') {
+			themes[theme].css()
+		}
+
 		update('app.loading', false);
+
 		if (!item) {
-			dispatch(setDialog({
+			return dispatch(setDialog({
 				msg: <div>
 					<p>There was an issue finding your item.</p>
 					<p>Please check the link that was sent to you and try again.</p>
@@ -116,9 +125,6 @@ export const ClaimRoute = (props) => {
 	};
 
 
-	console.log(item)
-
-
 	/// we don't want to render anything if there's no item ???
 	if (!item) return null;
 	const { ldHash: createdAccount, nftHash: claimedItem } = item || {};
@@ -130,7 +136,7 @@ export const ClaimRoute = (props) => {
 		claimedItem,
 		accountId,
 		walletUrl,
-		dialog, wallet, 
+		dialog, wallet,
 		handleCreateWallet, handleClaimNFT,
 	}} />;
 };

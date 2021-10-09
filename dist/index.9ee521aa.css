@@ -118,35 +118,40 @@ section.modal .content .wrap .close {
 .claim {
   padding-top: 1rem;
 }
-.claim .layout {
-  margin: 0;
-  max-width: 100%;
-}
 .claim .layout > div {
-  padding: 0 1rem;
-  width: 100%;
+  margin: 0 1rem;
 }
 .claim .layout > div:first-of-type {
-  margin: 0;
-  height: 100%;
+  width: calc(100% - 2rem);
   position: relative;
 }
-.claim .layout > div:first-of-type::before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  top: -7px;
-  left: 8px;
-  right: 8px;
-  bottom: 0;
-  border-radius: 22px;
-  padding: 16px;
-  background: linear-gradient(to right, #2FD2E9, #3A90F4, #B950E3);
-  opacity: 50%;
-}
-.claim .layout > div:first-of-type img {
+.claim .layout > div:first-of-type .background-border {
   width: 100%;
-  margin: 0;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(to right, #2FD2E9, #3A90F4, #B950E3);
+  border-radius: 22px;
+}
+.claim .layout > div:first-of-type .background {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border-radius: 16px;
+}
+.claim .layout > div:first-of-type .image {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.claim .layout > div:first-of-type .image img {
+  object-fit: cover;
+  display: block;
+  width: 100%;
   border-radius: 16px;
 }
 .claim h1 {
@@ -194,6 +199,7 @@ body {
 }
 
 body {
+  margin: 0 !important;
   background: #F8F8F8;
   font-family: "Poppins", sans-serif;
   font-weight: 400;
@@ -211,6 +217,14 @@ body {
   justify-content: space-between;
 }
 
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
 #background {
   position: fixed;
   left: 0;
@@ -221,6 +235,7 @@ body {
   background-size: 100vw 100vh;
   background-repeat: no-repeat;
   filter: blur(24px);
+  animation: fadeIn 1s cubic-bezier(0.39, 0.575, 0.565, 1);
 }
 
 @media (min-width: 992px) {
@@ -231,6 +246,10 @@ body {
 p {
   margin: 0;
   margin-bottom: 1rem;
+}
+
+.center {
+  text-align: center;
 }
 
 button, input {

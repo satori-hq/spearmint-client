@@ -22949,13 +22949,6 @@ const App = ()=>{
                     lineNumber: 34
                 },
                 __self: undefined
-            }),
-            /*#__PURE__*/ _jsxRuntime.jsx(_footer.Footer, {
-                __source: {
-                    fileName: "src/App.js",
-                    lineNumber: 35
-                },
-                __self: undefined
             })
         ]
     }));
@@ -37443,6 +37436,7 @@ var _history = require("../utils/history");
 var _app = require("../state/app");
 var _near = require("../state/near");
 var _apiUtils = require("../utils/api-utils");
+var _themes = require("../themes/themes");
 var _canvasConfetti = require("canvas-confetti");
 var _canvasConfettiDefault = parcelHelpers.interopDefault(_canvasConfetti);
 var _claim = require("./Claim");
@@ -37472,22 +37466,25 @@ const ClaimRoute = (props)=>{
     // code is the only path param e.g. /#/code
     const code = pathArgs[0];
     const onMount = async ()=>{
-        if (!code || !code.length) return;
         update('app.loading', true);
+        if (!code || !code.length) return;
         const item1 = await dispatch(_app.getItem(code));
+        /// lazy import theme here
+        const { theme  } = item1;
+        if (theme && theme !== 'default') _themes.themes[theme].css();
         update('app.loading', false);
-        if (!item1) dispatch(_app.setDialog({
+        if (!item1) return dispatch(_app.setDialog({
             msg: /*#__PURE__*/ _jsxRuntime.jsxs("div", {
                 __source: {
                     fileName: "src/components/ClaimRoute.js",
-                    lineNumber: 44
+                    lineNumber: 53
                 },
                 __self: undefined,
                 children: [
                     /*#__PURE__*/ _jsxRuntime.jsx("p", {
                         __source: {
                             fileName: "src/components/ClaimRoute.js",
-                            lineNumber: 45
+                            lineNumber: 54
                         },
                         __self: undefined,
                         children: "There was an issue finding your item."
@@ -37495,7 +37492,7 @@ const ClaimRoute = (props)=>{
                     /*#__PURE__*/ _jsxRuntime.jsx("p", {
                         __source: {
                             fileName: "src/components/ClaimRoute.js",
-                            lineNumber: 46
+                            lineNumber: 55
                         },
                         __self: undefined,
                         children: "Please check the link that was sent to you and try again."
@@ -37528,14 +37525,14 @@ const ClaimRoute = (props)=>{
             msg: /*#__PURE__*/ _jsxRuntime.jsxs("div", {
                 __source: {
                     fileName: "src/components/ClaimRoute.js",
-                    lineNumber: 72
+                    lineNumber: 81
                 },
                 __self: undefined,
                 children: [
                     /*#__PURE__*/ _jsxRuntime.jsx("p", {
                         __source: {
                             fileName: "src/components/ClaimRoute.js",
-                            lineNumber: 73
+                            lineNumber: 82
                         },
                         __self: undefined,
                         children: "There was an issue setting up your NEAR Account."
@@ -37543,7 +37540,7 @@ const ClaimRoute = (props)=>{
                     /*#__PURE__*/ _jsxRuntime.jsx("p", {
                         __source: {
                             fileName: "src/components/ClaimRoute.js",
-                            lineNumber: 74
+                            lineNumber: 83
                         },
                         __self: undefined,
                         children: "Please try again."
@@ -37579,14 +37576,14 @@ const ClaimRoute = (props)=>{
                 msg: /*#__PURE__*/ _jsxRuntime.jsxs("div", {
                     __source: {
                         fileName: "src/components/ClaimRoute.js",
-                        lineNumber: 103
+                        lineNumber: 112
                     },
                     __self: undefined,
                     children: [
                         /*#__PURE__*/ _jsxRuntime.jsx("p", {
                             __source: {
                                 fileName: "src/components/ClaimRoute.js",
-                                lineNumber: 104
+                                lineNumber: 113
                             },
                             __self: undefined,
                             children: "There was an issue claiming your NFT."
@@ -37594,7 +37591,7 @@ const ClaimRoute = (props)=>{
                         /*#__PURE__*/ _jsxRuntime.jsx("p", {
                             __source: {
                                 fileName: "src/components/ClaimRoute.js",
-                                lineNumber: 105
+                                lineNumber: 114
                             },
                             __self: undefined,
                             children: "Please try again."
@@ -37616,7 +37613,6 @@ const ClaimRoute = (props)=>{
         update('app.loading', false);
         launchConfetti();
     };
-    console.log(item);
     /// we don't want to render anything if there's no item ???
     if (!item) return null;
     const { ldHash: createdAccount , nftHash: claimedItem  } = item || {
@@ -37634,7 +37630,7 @@ const ClaimRoute = (props)=>{
         handleClaimNFT,
         __source: {
             fileName: "src/components/ClaimRoute.js",
-            lineNumber: 126
+            lineNumber: 132
         },
         __self: undefined
     }));
@@ -37649,7 +37645,7 @@ $RefreshReg$(_c, "ClaimRoute");
   window.$RefreshReg$ = prevRefreshReg;
   window.$RefreshSig$ = prevRefreshSig;
 }
-},{"react/jsx-runtime":"8xIwr","react":"6TuXu","../utils/history":"72M19","../state/app":"iwwmE","../state/near":"8Rcdt","../utils/api-utils":"cKglM","canvas-confetti":"2QXso","./Claim":"7vgrR","./ClaimRoute.scss":"7djRC","@parcel/transformer-js/src/esmodule-helpers.js":"JacNc","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"5V79J","../utils/storage":"ejENA"}],"2QXso":[function(require,module,exports) {
+},{"react/jsx-runtime":"8xIwr","react":"6TuXu","../utils/history":"72M19","../state/app":"iwwmE","../state/near":"8Rcdt","../utils/api-utils":"cKglM","canvas-confetti":"2QXso","./Claim":"7vgrR","./ClaimRoute.scss":"7djRC","@parcel/transformer-js/src/esmodule-helpers.js":"JacNc","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"5V79J","../utils/storage":"ejENA","../themes/themes":"hwVEa"}],"2QXso":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "create", ()=>create
@@ -38153,27 +38149,51 @@ const Layout = ({ media , title , paras , buttons =[]  })=>/*#__PURE__*/ _jsxRun
                         lineNumber: 8
                     },
                     __self: undefined,
-                    children: /*#__PURE__*/ _jsxRuntime.jsx("img", {
-                        src: media,
-                        crossOrigin: "*",
+                    children: /*#__PURE__*/ _jsxRuntime.jsx("div", {
+                        className: "background-border",
                         __source: {
                             fileName: "src/components/Claim.js",
                             lineNumber: 9
                         },
-                        __self: undefined
+                        __self: undefined,
+                        children: /*#__PURE__*/ _jsxRuntime.jsx("div", {
+                            className: "background",
+                            __source: {
+                                fileName: "src/components/Claim.js",
+                                lineNumber: 10
+                            },
+                            __self: undefined,
+                            children: /*#__PURE__*/ _jsxRuntime.jsx("div", {
+                                className: "image",
+                                __source: {
+                                    fileName: "src/components/Claim.js",
+                                    lineNumber: 11
+                                },
+                                __self: undefined,
+                                children: /*#__PURE__*/ _jsxRuntime.jsx("img", {
+                                    src: media,
+                                    crossOrigin: "*",
+                                    __source: {
+                                        fileName: "src/components/Claim.js",
+                                        lineNumber: 12
+                                    },
+                                    __self: undefined
+                                })
+                            })
+                        })
                     })
                 }),
                 /*#__PURE__*/ _jsxRuntime.jsxs("div", {
                     __source: {
                         fileName: "src/components/Claim.js",
-                        lineNumber: 11
+                        lineNumber: 17
                     },
                     __self: undefined,
                     children: [
                         title && /*#__PURE__*/ _jsxRuntime.jsx("h1", {
                             __source: {
                                 fileName: "src/components/Claim.js",
-                                lineNumber: 12
+                                lineNumber: 18
                             },
                             __self: undefined,
                             children: title
@@ -38181,13 +38201,13 @@ const Layout = ({ media , title , paras , buttons =[]  })=>/*#__PURE__*/ _jsxRun
                         /*#__PURE__*/ _jsxRuntime.jsx("div", {
                             __source: {
                                 fileName: "src/components/Claim.js",
-                                lineNumber: 13
+                                lineNumber: 19
                             },
                             __self: undefined,
                             children: paras.length && paras.map((p, i)=>/*#__PURE__*/ _jsxRuntime.jsx("p", {
                                     __source: {
                                         fileName: "src/components/Claim.js",
-                                        lineNumber: 14
+                                        lineNumber: 20
                                     },
                                     __self: undefined,
                                     children: p
@@ -38197,7 +38217,7 @@ const Layout = ({ media , title , paras , buttons =[]  })=>/*#__PURE__*/ _jsxRun
                         /*#__PURE__*/ _jsxRuntime.jsx("div", {
                             __source: {
                                 fileName: "src/components/Claim.js",
-                                lineNumber: 16
+                                lineNumber: 22
                             },
                             __self: undefined,
                             children: buttons.length > 0 && buttons.map(({ label , className , onClick  }, i)=>label && /*#__PURE__*/ _jsxRuntime.jsx("button", {
@@ -38205,7 +38225,7 @@ const Layout = ({ media , title , paras , buttons =[]  })=>/*#__PURE__*/ _jsxRun
                                     onClick: onClick,
                                     __source: {
                                         fileName: "src/components/Claim.js",
-                                        lineNumber: 18
+                                        lineNumber: 24
                                     },
                                     __self: undefined,
                                     children: label
@@ -38246,7 +38266,7 @@ const Claim = (props)=>{
         ],
         __source: {
             fileName: "src/components/Claim.js",
-            lineNumber: 40
+            lineNumber: 46
         },
         __self: undefined
     }) : /*#__PURE__*/ _jsxRuntime.jsx(Layout, {
@@ -38265,21 +38285,21 @@ const Claim = (props)=>{
         ],
         __source: {
             fileName: "src/components/Claim.js",
-            lineNumber: 53
+            lineNumber: 59
         },
         __self: undefined
     });
     if (!item) return !loading && /*#__PURE__*/ _jsxRuntime.jsxs("div", {
         __source: {
             fileName: "src/components/Claim.js",
-            lineNumber: 68
+            lineNumber: 74
         },
         __self: undefined,
         children: [
             /*#__PURE__*/ _jsxRuntime.jsx("h1", {
                 __source: {
                     fileName: "src/components/Claim.js",
-                    lineNumber: 69
+                    lineNumber: 75
                 },
                 __self: undefined,
                 children: "Satori"
@@ -38287,7 +38307,7 @@ const Claim = (props)=>{
             /*#__PURE__*/ _jsxRuntime.jsx("p", {
                 __source: {
                     fileName: "src/components/Claim.js",
-                    lineNumber: 70
+                    lineNumber: 76
                 },
                 __self: undefined,
                 children: "Check the link sent to you and try again."
@@ -38300,7 +38320,7 @@ const Claim = (props)=>{
                 ...dialog,
                 __source: {
                     fileName: "src/components/Claim.js",
-                    lineNumber: 75
+                    lineNumber: 81
                 },
                 __self: undefined
             }),
@@ -38332,7 +38352,7 @@ const Claim = (props)=>{
                 ],
                 __source: {
                     fileName: "src/components/Claim.js",
-                    lineNumber: 78
+                    lineNumber: 84
                 },
                 __self: undefined
             }) : /*#__PURE__*/ _jsxRuntime.jsx(Layout, {
@@ -38367,7 +38387,7 @@ const Claim = (props)=>{
                 ],
                 __source: {
                     fileName: "src/components/Claim.js",
-                    lineNumber: 94
+                    lineNumber: 100
                 },
                 __self: undefined
             })
@@ -38551,6 +38571,84 @@ $RefreshReg$(_c, "Dialog");
 },{"react/jsx-runtime":"8xIwr","react":"6TuXu","url:../img/close.svg":"dhPAR","@parcel/transformer-js/src/esmodule-helpers.js":"JacNc","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"5V79J","./Dialog.scss":"h43lP"}],"dhPAR":[function(require,module,exports) {
 module.exports = require('./helpers/bundle-url').getBundleURL('cBz4w') + "close.90231740.svg";
 
-},{"./helpers/bundle-url":"8YnfL"}],"h43lP":[function() {},{}],"kO12h":[function() {},{}],"7djRC":[function() {},{}],"gdJJH":[function() {},{}]},["2rAXy","8Ye98","6cF5V"], "6cF5V", "parcelRequiree8ef")
+},{"./helpers/bundle-url":"8YnfL"}],"h43lP":[function() {},{}],"kO12h":[function() {},{}],"7djRC":[function() {},{}],"hwVEa":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "themes", ()=>themes
+);
+const themes = {
+    hol: {
+        css: ()=>require("e2d19b925d71e6c8")
+        ,
+        content: {
+        }
+    }
+};
+
+},{"e2d19b925d71e6c8":"hDSkM","@parcel/transformer-js/src/esmodule-helpers.js":"JacNc"}],"hDSkM":[function(require,module,exports) {
+module.exports = require("./helpers/browser/css-loader")(require('./helpers/bundle-url').getBundleURL('cBz4w') + "theme-hol.6ab1296a.css").catch((err)=>{
+    delete module.bundle.cache[module.id];
+    throw err;
+});
+
+},{"./helpers/browser/css-loader":"e12S7","./helpers/bundle-url":"8YnfL"}],"e12S7":[function(require,module,exports) {
+"use strict";
+var cacheLoader = require('../cacheLoader');
+module.exports = cacheLoader(function(bundle) {
+    return new Promise(function(resolve, reject) {
+        // Don't insert the same link element twice (e.g. if it was already in the HTML)
+        var existingLinks = document.getElementsByTagName('link');
+        if ([].concat(existingLinks).some(function isCurrentBundle(link) {
+            return link.href === bundle && link.rel.indexOf('stylesheet') > -1;
+        })) {
+            resolve();
+            return;
+        }
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = bundle;
+        link.onerror = function(e) {
+            link.onerror = link.onload = null;
+            link.remove();
+            reject(e);
+        };
+        link.onload = function() {
+            link.onerror = link.onload = null;
+            resolve();
+        };
+        document.getElementsByTagName('head')[0].appendChild(link);
+    });
+});
+
+},{"../cacheLoader":"5Ry56"}],"5Ry56":[function(require,module,exports) {
+"use strict";
+var cachedBundles = {
+};
+var cachedPreloads = {
+};
+var cachedPrefetches = {
+};
+function getCache(type) {
+    switch(type){
+        case 'preload':
+            return cachedPreloads;
+        case 'prefetch':
+            return cachedPrefetches;
+        default:
+            return cachedBundles;
+    }
+}
+module.exports = function(loader, type) {
+    return function(bundle) {
+        var cache = getCache(type);
+        if (cache[bundle]) return cache[bundle];
+        return cache[bundle] = loader.apply(null, arguments).catch(function(e) {
+            delete cache[bundle];
+            throw e;
+        });
+    };
+};
+
+},{}],"gdJJH":[function() {},{}]},["2rAXy","8Ye98","6cF5V"], "6cF5V", "parcelRequiree8ef")
 
 //# sourceMappingURL=index.5cb7de60.js.map

@@ -28,11 +28,11 @@ export const initNear = () => async ({ update, getState, dispatch }) => {
 	const signOut = wallet.signOut;
 	wallet.signOut = () => {
 		signOut.call(wallet);
-		update('near', { wallet , account: null });
+		update('near', { wallet, account: null });
 	};
 
 	wallet.signedIn = wallet.isSignedIn();
-    
+
 	let account;
 	if (wallet.signedIn) {
 		account = wallet.account();

@@ -5,6 +5,7 @@
 }
 
 body {
+    margin: 0 !important;
 	background: $bg;
 	font-family: 'Poppins', sans-serif;
 	font-weight: 400;
@@ -23,6 +24,12 @@ body {
 	justify-content: space-between;
 }
 
+@keyframes fadeIn {
+	0% {opacity:0;}
+	100% {opacity:1;}
+  }
+
+
 #background {
 	position: fixed;
 	left: 0;
@@ -37,6 +44,7 @@ body {
 	background-size: 100vw 100vh;
 	background-repeat: no-repeat;
 	filter: blur(24px);
+	animation: fadeIn 1s cubic-bezier(0.39, 0.575, 0.565, 1);
 }
 
 @media (min-width: 992px) {
@@ -48,6 +56,11 @@ body {
 p {
 	margin: 0;
 	margin-bottom: $margin;
+}
+
+
+.center {
+	text-align: center;
 }
 
 button, input {

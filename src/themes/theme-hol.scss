@@ -1,0 +1,20 @@
+
+
+#background {
+	background: #f4e8ce;
+}
+
+.lds-loader div {
+	background:rgb(255, 77, 3);
+}
+
+.claim {
+	.layout > div:first-of-type .background-border {
+		background:rgb(255, 77, 3);
+		opacity: 1;
+	}
+	h1 > span > span.sparkle {
+		background: none;
+		-webkit-text-fill-color: rgb(255, 77, 3);
+	}
+}
