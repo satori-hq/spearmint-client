@@ -8,10 +8,10 @@ export const {
 } = getConfig('testnet');
 
 /// Where are we?
-let ENV = window.location.host.split('.')[0]?.split('-')[1]
-/// TODO switch to mainnet
+const subdomain = window.location.host.split('.')[0]
+let ENV = subdomain?.split('-')[1]
 if (!ENV) ENV = window.location.hash.split('?ENV=')[1]
-if (!ENV || !/dev|testnet|mainnet/.test(ENV)) ENV = 'testnet'
+if (!ENV || !/dev|testnet|mainnet/.test(ENV)) ENV = subdomain === 'sc' ? 'mainnet' : 'testnet'
 const API_URL = `https://spearmint-${ENV}.near.workers.dev/v1/`
 
 console.log(API_URL)

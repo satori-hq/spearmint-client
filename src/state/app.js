@@ -16,7 +16,6 @@ const initialState = {
 };
 
 export const IPFS_ROUTE = 'https://cloudflare-ipfs.com/ipfs/';
-export const API_SERVER = process.env.REACT_APP_API_SERVER;
 export const ITEM_KEY = '__ITEM_';
 export const { appStore, AppProvider } = State(initialState, 'app');
 
