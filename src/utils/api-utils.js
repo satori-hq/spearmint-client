@@ -1,20 +1,21 @@
 import getConfig from '../config';
 import { get } from '../utils/storage';
 
+/// Where are we?
+let ENV = subdomain?.split('-')[1]
+const subdomain = window.location.host.split('.')[0]
+if (!ENV) ENV = window.location.hash.split('?ENV=')[1]
+if (!ENV || !/dev|testnet|mainnet/.test(ENV)) ENV = subdomain === 'sc' ? 'mainnet' : 'testnet'
+
+export const env
+
 export const {
 	GAS,
 	networkId, nodeUrl, walletUrl, nameSuffix,
 	contractName, contractMethods
-} = getConfig('testnet');
+} = getConfig(ENV);
 
-/// Where are we?
-const subdomain = window.location.host.split('.')[0]
-let ENV = subdomain?.split('-')[1]
-if (!ENV) ENV = window.location.hash.split('?ENV=')[1]
-if (!ENV || !/dev|testnet|mainnet/.test(ENV)) ENV = subdomain === 'sc' ? 'mainnet' : 'testnet'
 const API_URL = `https://spearmint-${ENV}.near.workers.dev/v1/`
-
-console.log(API_URL)
 
 export const fetchJson = ({ url, method = 'GET', body = {} }) =>
 	fetch(/http/g.test(url) ? url : API_URL + url, {

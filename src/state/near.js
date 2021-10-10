@@ -1,13 +1,14 @@
 import getConfig from '../config';
 import * as nearAPI from 'near-api-js';
 import { getWallet, getAccount } from '../utils/near-utils';
+import { env } from '../utils/api-utils';
 
 export const {
 	GAS,
 	networkId,
 	nodeUrl, walletUrl, nameSuffix,
 	contractId,
-} = getConfig('testnet');
+} = getConfig(env);
 
 export const {
 	Account,
