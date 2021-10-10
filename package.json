@@ -19,14 +19,17 @@
 		"eslint": "^7.14.0",
 		"rimraf": "^3.0.2"
 	},
-	"browserslist": [
-		"last 2 Chrome versions"
-	],
+	"browserslist": {
+		"prod": [
+			"> 0.5%"
+		],
+		"dev": "last 2 Chrome versions"
+	},
 	"scripts": {
 		"clean": "rimraf ./.parcel-cache",
 		"swap": "mkdir -p dist && cp -a output/. dist/ && rimraf output && cd dist && find -not -newermt '-30 seconds' -delete",
-		"build": "yarn clean && parcel build src/index.html --no-source-maps --dist-dir output && yarn swap",
+		"build": "BROWSERSLIST_ENV=prod yarn clean && parcel build src/index.html --no-source-maps --dist-dir output && yarn swap",
 		"fix": "eslint src/ --fix",
-		"start": "parcel src/index.html"
+		"start": "BROWSERSLIST_ENV=dev parcel src/index.html"
 	}
 }
