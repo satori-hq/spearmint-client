@@ -7,7 +7,7 @@ const subdomain = window.location.host.split('.')[0]
 if (!ENV) ENV = window.location.hash.split('?ENV=')[1]
 if (!ENV || !/dev|testnet|mainnet/.test(ENV)) ENV = subdomain === 'sc' ? 'mainnet' : 'testnet'
 
-export const env
+export const env = ENV
 
 export const {
 	GAS,
