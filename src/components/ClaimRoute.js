@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { set } from '../utils/storage'
 import { pathAndArgs } from '../utils/history';
@@ -32,6 +32,8 @@ export const ClaimRoute = (props) => {
 		accountId = account.accountId;
 	}
 
+	const [theme, setTheme] = useState()
+
 	// code is the only path param e.g. /#/code
 	const code = pathArgs[0];
 
@@ -43,6 +45,7 @@ export const ClaimRoute = (props) => {
 		/// lazy import theme here
 		const { theme } = item
 		if (theme && theme !== 'default') {
+			setTheme(themes[theme])
 			themes[theme].css()
 		}
 
@@ -132,6 +135,7 @@ export const ClaimRoute = (props) => {
 
 	return <Claim {...{
 		item,
+		theme,
 		loading,
 		createdAccount,
 		claimedItem,

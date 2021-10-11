@@ -32,6 +32,7 @@ export const Claim = (props) => {
 
 	const {
 		item, item: { media },
+		theme,
 		loading,
 		createdAccount, claimedItem,
 		accountId,
@@ -44,10 +45,10 @@ export const Claim = (props) => {
 		return accountId ?
 
 			<Layout {...{
-				title: <span>Congratulations <span className="sparkle">{accountId}!</span></span>,
+				title: <span>Congratulations, <span className="sparkle">{accountId}!</span></span>,
 				media,
 				paras: [
-					'You claimed your NFT!'
+					theme?.successMsg ? theme?.successMsg : 'You claimed your NFT!'
 				],
 				buttons: [{
 					label: 'View NFT in NEAR Wallet',
@@ -60,7 +61,7 @@ export const Claim = (props) => {
 				title: <span>NFT claimed!</span>,
 				media,
 				paras: [
-					'This NFT was already claimed.'
+					'This NFT has already been claimed.'
 				],
 				buttons: [{
 					label: 'View NFTs in your NEAR Wallet',
@@ -82,26 +83,29 @@ export const Claim = (props) => {
 		{
 			!accountId ?
 				<Layout {...{
-					title: <span>Congratulations you <span className="sparkle">rock!</span></span>,
+					title: theme?.title ? theme.title : <span>Congratulations! You received an <span className="sparkle">NFT!</span></span>,
 					media,
 					paras: [
-						'You need to connect or create a NEAR Wallet so we know where to send your NFT!'
+						'Please create a NEAR wallet (or connect if you already have one) so we can deliver your NFT.'
 					],
-					buttons: [{
-						label: 'Connect Wallet',
-						onClick: () => wallet.signIn()
-					}, !createdAccount ? {
+					buttons: [
+						!createdAccount ? {
 						label: 'Create Wallet',
-						className: 'outline',
 						onClick: handleCreateWallet
-					} : {}]
+						} : {},
+						{
+							label: 'Connect Wallet',
+							className: 'outline',
+							onClick: () => wallet.signIn()
+						}
+					]
 				}} />
 				:
 				<Layout {...{
 					title: <span>Wallet <span className="sparkle">{accountId}</span> connected!</span>,
 					media,
 					paras: [
-						'You can now claim your NFT!'
+						'You can now claim your NFT.'
 					],
 					buttons: [{
 						label: 'Claim NFT',

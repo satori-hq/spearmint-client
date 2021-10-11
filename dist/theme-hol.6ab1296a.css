@@ -1,0 +1,17 @@
+#background {
+  background: #f4e8ce;
+}
+
+.lds-loader div {
+  background: #ff4d03;
+}
+
+.claim .layout > div:first-of-type .background-border {
+  background: #ff4d03;
+  opacity: 1;
+}
+.claim h1 > span > span.sparkle {
+  background: none;
+  -webkit-text-fill-color: #ff4d03;
+}
+/*# sourceMappingURL=theme-hol.6ab1296a.css.map */
