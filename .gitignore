@@ -19,6 +19,7 @@ notes
 /coverage
 
 # production
+dist
 /client/dist
 /server/dist
 
