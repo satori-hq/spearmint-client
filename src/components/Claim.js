@@ -48,12 +48,19 @@ export const Claim = (props) => {
 				title: <span>Congratulations, <span className="sparkle">{accountId}!</span></span>,
 				media,
 				paras: [
-					theme?.successMsg ? theme?.successMsg : 'You claimed your NFT!'
+					theme?.successMsg ? theme.successMsg : 'You claimed your NFT!'
 				],
-				buttons: [{
-					label: 'View NFT in NEAR Wallet',
-					onClick: () => window.open(walletUrl + '/?tab=collectibles')
-				}]
+				buttons: [
+					theme?.successButton ? {
+						label: theme.successButton.label,
+						onClick: () => window.open(theme.successButton.link)
+					}
+					:
+					{
+						label: 'View NFT in NEAR Wallet',
+						onClick: () => window.open(walletUrl + '/?tab=collectibles')
+					}
+				]
 			}} />
 			:
 
