@@ -1,16 +1,53 @@
 export const themes = {
 	hol: {
 		css: () => import('./theme-hol.scss'),
-		title: <span>NFCastle Patronage <span className="sparkle">Confirmed!</span></span>,
-		successMsg: `You've successfully claimed your NFCastle Patron NFT.`
+		claimTitle: <span>NFCastle Patronage <span className="sparkle">Confirmed!</span></span>,
+		claimedParas: [
+			`You've successfully claimed your NFCastle Patron NFT.`,
+		],
 	},
 	astro: {
 		css: () => import('./theme-astro.scss'),
-		title: <span>Astro DAO <span className="sparkle">Launch NFT!</span></span>,
-		successMsg: `Congratulations, now create a proposal to become a member of the Astro DAO`,
-		successButton: {
+		claimTitle: <span>Astro DAO <span className="sparkle">Launch NFT!</span></span>,
+
+		successMsg: [
+			`Congratulations, now create a proposal to become a member of the Astro DAO`,
+		],
+		claimedButtons: [{
 			label: 'Join the DAO',
 			link: 'https://app.astrodao.com/dao/meet-vote-fund.sputnik-dao.near'
-		}
+		}],
+	},
+	genc: {
+		claimTitle: <span>Congrats! Here's your <span className="sparkle">GenC Digital Passport (NFT)</span></span>,
+		claimParas: [
+			'Blockchain tools like Satori can be used in marketing to:',
+			'Issue event tickets',
+			'Provide access to gated websites',
+			'And so much more...'
+		],
+		claimButtons: [
+			'Create Wallet to Claim',
+			'Claim with Existing Wallet',
+		],
+		claimTips: [
+			<span>*In blockchain accounts are “wallets”, you’ll use this to log into websites, and hold your assets like NFTs and Tokens</span>
+		],
+
+		connectedTitle: (accountId) => <span>Nice! <span className="sparkle">{ accountId }</span> is connected!</span>,
+		connectedParas: ['One more step...'],
+		connectedButtons: [
+			'Add this NFT to your wallet',
+			'Or change wallet',
+		],
+
+		claimedTitle: <span>Nice job, you own a <span className="sparkle">GenC NFT!</span></span>,
+		claimedParas: [
+			'Now, Register to compete for $1M+ in GenC marketing bounties',
+		],
+		claimedButtons: [{
+			label: 'Compete in GenC',
+			link: 'https://generationcrypto.org/?utm_source=email&utm_medium=satori-sonar&utm_campaign=genc-nft'
+		}],
 	}
 }

@@ -2,7 +2,7 @@ import React from 'react';
 import { Dialog } from './Dialog';
 import './Claim.scss';
 
-const Layout = ({ media, title, paras, buttons = [] }) =>
+const Layout = ({ media, title, paras, buttons = [], tips = [] }) =>
 	<div className="claim">
 		<div className="layout">
 			<div>
@@ -17,12 +17,15 @@ const Layout = ({ media, title, paras, buttons = [] }) =>
 			<div>
 				{title && <h1>{title}</h1>}
 				<div>
-					{paras.length && paras.map((p, i) => <p key={i}>{p}</p>)}
+					{paras.length > 0 && paras.map((p, i) => <p key={i}>{p}</p>)}
 				</div>
 				<div>
 					{buttons.length > 0 && buttons.map(({ label, className, onClick }, i) => label &&
 						<button key={i} className={className} onClick={onClick}>{label}</button>
 					)}
+				</div>
+				<div>
+					{tips.length > 0 && tips.map((p, i) => <p key={i}>{p}</p>)}
 				</div>
 			</div>
 		</div>
@@ -30,7 +33,7 @@ const Layout = ({ media, title, paras, buttons = [] }) =>
 
 export const Claim = (props) => {
 
-	const {
+	let {
 		item, item: { media },
 		theme,
 		loading,
@@ -41,19 +44,22 @@ export const Claim = (props) => {
 		handleCreateWallet, handleClaimNFT,
 	} = props;
 
+	// claimedItem = true
+	// accountId = 'matt.near'
+
 	if (claimedItem) {
 		return accountId ?
 
 			<Layout {...{
-				title: <span>Congratulations, <span className="sparkle">{accountId}!</span></span>,
+				title: theme?.claimedTitle ? theme.claimedTitle : <span>Congratulations, <span className="sparkle">{accountId}!</span></span>,
 				media,
-				paras: [
-					theme?.successMsg ? theme.successMsg : 'You claimed your NFT!'
+				paras: theme?.claimedParams ? theme.claimedParams : [
+					'You claimed your NFT!'
 				],
 				buttons: [
-					theme?.successButton ? {
-						label: theme.successButton.label,
-						onClick: () => window.open(theme.successButton.link)
+					theme?.claimedButtons ? {
+						label: theme.claimedButtons[0].label,
+						onClick: () => window.open(theme.claimedButtons[0].link)
 					}
 					:
 					{
@@ -63,7 +69,6 @@ export const Claim = (props) => {
 				]
 			}} />
 			:
-
 			<Layout {...{
 				title: <span>NFT claimed!</span>,
 				media,
@@ -90,35 +95,36 @@ export const Claim = (props) => {
 		{
 			!accountId ?
 				<Layout {...{
-					title: theme?.title ? theme.title : <span>Congratulations! You received an <span className="sparkle">NFT!</span></span>,
+					title: theme?.claimTitle ? theme.claimTitle : <span>Congratulations! You received an <span className="sparkle">NFT!</span></span>,
 					media,
-					paras: [
+					paras: theme?.claimParas ? theme.claimParas : [
 						'Please create a NEAR wallet (or connect if you already have one) so we can deliver your NFT.'
 					],
 					buttons: [
 						!createdAccount ? {
-						label: 'Create Wallet',
+						label: theme?.claimButtons ? theme.claimButtons[0] : 'Create Wallet',
 						onClick: handleCreateWallet
 						} : {},
 						{
-							label: 'Connect Wallet',
+							label: theme?.claimButtons ? theme.claimButtons[1] : 'Connect Wallet',
 							className: 'outline',
 							onClick: () => wallet.signIn()
 						}
-					]
+					],
+					tips: theme?.claimTips ? theme?.claimTips : []
 				}} />
 				:
 				<Layout {...{
-					title: <span>Wallet <span className="sparkle">{accountId}</span> connected!</span>,
+					title: theme?.connectedTitle ? theme.connectedTitle(accountId) : <span>Wallet <span className="sparkle">{accountId}</span> connected!</span>,
 					media,
-					paras: [
+					paras: theme?.connectedParas ? theme.connectedParas : [
 						'You can now claim your NFT.'
 					],
 					buttons: [{
-						label: 'Claim NFT',
+						label: theme?.connectedButtons ? theme.connectedButtons[0] : 'Claim NFT',
 						onClick: handleClaimNFT
 					}, !createdAccount ? {
-						label: 'Or Change Wallet',
+						label: theme?.connectedButtons ? theme.connectedButtons[1] : 'Or Change Wallet',
 						className: 'text',
 						onClick: () => {
 							wallet.signOut();

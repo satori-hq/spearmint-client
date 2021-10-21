@@ -43,10 +43,14 @@ export const ClaimRoute = (props) => {
 		const item = await dispatch(getItem(code));
 
 		/// lazy import theme here
-		const { theme } = item
+		let { theme } = item || {}
+
+		/// debuggin theme
+		// theme = 'genc'
+
 		if (theme && theme !== 'default') {
 			setTheme(themes[theme])
-			themes[theme].css()
+			themes[theme]?.css && themes[theme].css()
 		}
 
 		update('app.loading', false);
