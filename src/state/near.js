@@ -24,7 +24,7 @@ export const initNear = () => async ({ update, getState, dispatch }) => {
 
 	wallet.signIn = () => {
 		console.log(contractId);
-		wallet.requestSignIn(contractId, 'Spearmint NFT API', encodeURIComponent(window.location.href));
+		wallet.requestSignIn(contractId, 'Spearmint NFT API', window.location.href);
 	};
 	const signOut = wallet.signOut;
 	wallet.signOut = () => {
