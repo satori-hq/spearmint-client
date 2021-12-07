@@ -49,5 +49,35 @@ export const themes = {
 			label: 'Compete in GenC',
 			link: 'https://generationcrypto.org/?utm_source=email&utm_medium=satori-sonar&utm_campaign=genc-nft'
 		}],
+	},
+	'fnmeka-pen': {
+		claimTitle: <span>Congrats! You will get the first clue as an NFT after you create (or connect) a NEAR Wallet!</span>,
+		claimParas: [
+			'Satori is creating custom wallets and NFTs for all FNMeka fans!',
+			'Create one now and get that clue!',
+		],
+		claimButtons: [
+			'Create Wallet to Get Clue',
+			'Claim Clue With an Existing Wallet',
+		],
+		claimTips: [
+			<span>*In the metaverse, your wallet is where you can keep your digital items.</span>
+		],
+
+		connectedTitle: (accountId) => <span>Awesome! <span className="sparkle">{ accountId }</span> is your chosen Wallet!</span>,
+		connectedParas: ['One more step...'],
+		connectedButtons: [
+			'Claim Clue with Wallet',
+			'Change Wallet',
+		],
+
+		claimedTitle: <span>Nice job, you got the clue <span className="sparkle">GenC NFT!</span></span>,
+		claimedParas: [
+			`Now, return to the FNMeka Creator's Pen Challenge`,
+		],
+		claimedButtons: [{
+			label: 'Return to Challenge ',
+			link: 'https://fnmeka.satori.art'
+		}],
 	}
 }
