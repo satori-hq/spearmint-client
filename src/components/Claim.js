@@ -59,7 +59,7 @@ export const Claim = (props) => {
 				buttons: [
 					theme?.claimedButtons ? {
 						label: theme.claimedButtons[0].label,
-						onClick: () => window.open(theme.claimedButtons[0].link)
+						onClick: () => window.open(theme.claimedButtons[0].link + '?accountId=' + accountId)
 					}
 					:
 					{
