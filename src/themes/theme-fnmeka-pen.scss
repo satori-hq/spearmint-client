@@ -1,0 +1,44 @@
+$teal: #23EFBE;
+$gray: #B4C7C7;
+$gold: #FFD66B;
+$gray-border: #636B6B;
+$light-black: #121212;
+
+body {
+	color: white;
+}
+
+button {
+	background: white;
+	color: black;
+	border-radius: 8px;
+	&.text, &.outline {
+		background: black;
+		color: white;
+		border-color: white;
+	}
+}
+
+#background {
+	background: black;
+	filter: none;
+}
+
+#background-border {
+	background: $teal;
+}
+
+.lds-loader div {
+	background: $teal;
+}
+
+.claim {
+	.layout > div:first-of-type .background-border {
+		background: $teal;
+		opacity: 1;
+	}
+	h1 > span > span.sparkle {
+		background: none;
+		-webkit-text-fill-color: $teal;
+	}
+}
