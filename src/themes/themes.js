@@ -52,6 +52,7 @@ export const themes = {
 	},
 	'fnmeka-pen': {
 		css: () => import('./theme-fnmeka-pen.scss'),
+		imgOverride: './static/fnmeka.gif',
 		claimTitle: <span>Your first clue is an NFT!</span>,
 		claimParas: [
 			'Create a NEAR wallet to claim the first clue.',

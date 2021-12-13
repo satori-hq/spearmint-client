@@ -2,14 +2,14 @@ import React from 'react';
 import { Dialog } from './Dialog';
 import './Claim.scss';
 
-const Layout = ({ media, title, paras, buttons = [], tips = [] }) =>
+const Layout = ({ media, title, paras, buttons = [], tips = [], theme }) =>
 	<div className="claim">
 		<div className="layout">
 			<div>
 				<div className='background-border'>
 					<div className='background'>
 						<div className='image'>
-							<img src={media} crossOrigin="*" />
+							<img src={theme?.imgOverride ? theme.imgOverride : media} crossOrigin="*" />
 						</div>
 					</div>
 				</div>
@@ -66,7 +66,8 @@ export const Claim = (props) => {
 						label: 'View NFT in NEAR Wallet',
 						onClick: () => window.open(walletUrl + '/?tab=collectibles')
 					}
-				]
+				],
+				theme
 			}} />
 			:
 			<Layout {...{
@@ -78,7 +79,8 @@ export const Claim = (props) => {
 				buttons: [{
 					label: 'View NFTs in your NEAR Wallet',
 					onClick: () => window.open(walletUrl + '/?tab=collectibles')
-				}]
+				}],
+				theme
 			}} />
 			;
 	}
@@ -111,7 +113,8 @@ export const Claim = (props) => {
 							onClick: () => wallet.signIn()
 						}
 					],
-					tips: theme?.claimTips ? theme?.claimTips : []
+					tips: theme?.claimTips ? theme?.claimTips : [],
+					theme
 				}} />
 				:
 				<Layout {...{
@@ -130,7 +133,8 @@ export const Claim = (props) => {
 							wallet.signOut();
 							window.location.href = window.location.href.split('?')[0];
 						}
-					} : {}]
+					} : {}],
+					theme
 				}} />
 		}
 	</>;

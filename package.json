@@ -10,12 +10,12 @@
 		"copy-to-clipboard": "^3.3.1",
 		"near-api-js": "near/near-api-js#3698af7afcdadaa836d477f69f69ab334bbe28b1",
 		"near-seed-phrase": "^0.2.0",
-		"parcel": "^v2.0.0-rc.0",
+		"parcel": "^2.0.1",
 		"react": "^17.0.1",
 		"react-dom": "^17.0.1"
 	},
 	"devDependencies": {
-		"@parcel/transformer-sass": "2.0.0-rc.0",
+		"@parcel/transformer-sass": "^2.0.1",
 		"eslint": "^7.14.0",
 		"rimraf": "^3.0.2"
 	},
@@ -26,10 +26,11 @@
 		"dev": "last 2 Chrome versions"
 	},
 	"scripts": {
-		"clean": "rimraf ./.parcel-cache",
-		"swap": "mkdir -p dist && cp -a output/. dist/ && rimraf output && cd dist && find -not -newermt '-30 seconds' -delete",
+		"static": "cp -a src/static/. dist/static/",
+		"clean": "rimraf ./.parcel-cache ./dist/static",
+		"swap": "mkdir -p dist && cp -a output/. dist/ && rimraf output && cd dist && mkdir static && yarn static && find -not -newermt '-30 seconds' -delete",
 		"build": "BROWSERSLIST_ENV=prod yarn clean && parcel build src/index.html --no-source-maps --dist-dir output && yarn swap",
 		"fix": "eslint src/ --fix",
-		"start": "BROWSERSLIST_ENV=dev parcel src/index.html"
+		"start": "yarn static && BROWSERSLIST_ENV=dev parcel src/index.html"
 	}
 }
