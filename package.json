@@ -26,11 +26,10 @@
 		"dev": "last 2 Chrome versions"
 	},
 	"scripts": {
-		"static": "cp -a src/static/. dist/static/",
 		"clean": "rimraf ./.parcel-cache ./dist/static",
-		"swap": "mkdir -p dist && cp -a output/. dist/ && rimraf output && cd dist && mkdir static && yarn static && find -not -newermt '-30 seconds' -delete",
+		"swap": "mkdir -p dist && cp -a output/. dist/ && rimraf output && cd dist && find -not -newermt '-30 seconds' -delete",
 		"build": "BROWSERSLIST_ENV=prod yarn clean && parcel build src/index.html --no-source-maps --dist-dir output && yarn swap",
 		"fix": "eslint src/ --fix",
-		"start": "yarn static && BROWSERSLIST_ENV=dev parcel src/index.html"
+		"start": "BROWSERSLIST_ENV=dev parcel src/index.html"
 	}
 }
