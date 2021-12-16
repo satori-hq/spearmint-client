@@ -1,0 +1,23 @@
+
+
+#background {
+	background: 
+	radial-gradient(ellipse 20vw 40vw at 20vw -5vh, #25446444, transparent 30vw),
+	radial-gradient(ellipse 20vw 40vw at 80vw 105vh, #25446444, transparent 30vw),
+	#E5E5E5;
+}
+
+.lds-loader div {
+	background:#DBA119;
+}
+
+.claim {
+	.layout > div:first-of-type .background-border {
+		background:none;
+		opacity: 1;
+	}
+	h1 > span > span.sparkle {
+		background: none;
+		-webkit-text-fill-color: rgb(255, 77, 3);
+	}
+}

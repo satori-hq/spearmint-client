@@ -1,3 +1,6 @@
+
+const sluggaBullet = {display: 'inline-block', width: 24, height: 24, border: '2px solid #DBA119', marginRight: 8, borderRadius: 12 }
+
 export const themes = {
 	hol: {
 		css: () => import('./theme-hol.scss'),
@@ -80,5 +83,36 @@ export const themes = {
 			label: 'Return to Challenge ',
 			link: 'https://fnmeka.satori.art'
 		}],
+	},
+	'slugga-originals': {
+		css: () => import('./theme-slugga-originals.scss'),
+		videoOverride: 'https://ipfs.io/ipfs/bafybeidarq7ie2itaudtzvnt3uycfbkg5skdewbikqkzi26ai5p4jjxja4',
+		claimTitle: <span>Claim your NFT to view exclusive content in the Slugga Vault</span>,
+		claimParas: [
+			'Here’s what you have to do to get it:',
+			<span><span style={sluggaBullet}></span><span>Create/Connect NEAR Wallet</span></span>,
+			<span><span style={sluggaBullet}></span><span>Claim NFT</span></span>,
+			<span><span style={sluggaBullet}></span><span>Visit iLLtownSluggaz.com to use your NFT</span></span>,
+		],
+		claimButtons: [
+			'Create Wallet',
+			'Claim with existing wallet',
+		],
+
+		// connectedTitle: (accountId) => <span>Awesome! <span className="sparkle">{ accountId }</span> is your chosen Wallet!</span>,
+		// connectedParas: ['One more step...'],
+		// connectedButtons: [
+		// 	'Claim Clue',
+		// 	'Change Wallet',
+		// ],
+
+		// claimedTitle: <span>Nice job, you got the clue!</span>,
+		// claimedParas: [
+		// 	`Now, return to the FNMeka Creator's Pen Challenge`,
+		// ],
+		// claimedButtons: [{
+		// 	label: 'Return to Challenge ',
+		// 	link: 'https://fnmeka.satori.art'
+		// }],
 	}
 }

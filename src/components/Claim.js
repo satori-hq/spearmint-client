@@ -9,7 +9,12 @@ const Layout = ({ media, title, paras, buttons = [], tips = [], theme }) =>
 				<div className='background-border'>
 					<div className='background'>
 						<div className='image'>
-							<img src={theme?.imgOverride ? theme.imgOverride : media} crossOrigin="*" />
+							{
+								theme?.videoOverride ? 
+								<video src={theme?.videoOverride} autoPlay={true} crossOrigin="*" />
+								:
+								<img src={theme?.imgOverride ? theme.imgOverride : media} crossOrigin="*" />
+							}
 						</div>
 					</div>
 				</div>
