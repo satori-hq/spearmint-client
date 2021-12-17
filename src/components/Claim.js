@@ -11,7 +11,7 @@ const Layout = ({ media, title, paras, buttons = [], tips = [], theme }) =>
 						<div className='image'>
 							{
 								theme?.videoOverride ? 
-								<video src={theme?.videoOverride} autoPlay={true} crossOrigin="*" />
+								<video src={theme?.videoOverride} autoPlay muted loop crossOrigin="*" />
 								:
 								<img src={theme?.imgOverride ? theme.imgOverride : media} crossOrigin="*" />
 							}
