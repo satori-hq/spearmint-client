@@ -86,7 +86,7 @@ export const themes = {
 	},
 	'slugga-originals': {
 		css: () => import('./theme-slugga-originals.scss'),
-		videoOverride: 'https://ipfs.io/ipfs/bafybeidarq7ie2itaudtzvnt3uycfbkg5skdewbikqkzi26ai5p4jjxja4',
+		videoOverride: 'https://cdn.shopify.com/s/files/1/0127/9777/1840/files/Slugga_3DNFT.mp4?v=1639461276',
 		claimTitle: <span>Claim your NFT to view exclusive content in the Slugga Vault</span>,
 		claimParas: [
 			'Here’s what you have to do to get it:',
