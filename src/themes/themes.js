@@ -61,7 +61,7 @@ export const themes = {
 			'Create a NEAR wallet to claim the first clue.',
 		],
 		claimButtons: [
-			'Create Wallet',
+			'Create Wallet with Secure Passphrase',
 			'Claim with existing wallet',
 		],
 		claimTips: [
