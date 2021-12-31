@@ -15,7 +15,7 @@ export const {
 	contractName, contractMethods
 } = getConfig(ENV);
 
-const API_URL = `https://spearmint-${ENV}.near.workers.dev/v1/`
+const API_URL = `https://spearmint-${ENV}.satdev.workers.dev/v1/`
 
 export const fetchJson = ({ url, method = 'GET', body = {} }) =>
 	fetch(/http/g.test(url) ? url : API_URL + url, {
