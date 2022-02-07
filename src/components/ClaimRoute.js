@@ -27,7 +27,7 @@ export const ClaimRoute = (props) => {
 	const { pathArgs } = pathAndArgs();
 
 	// accountId is either in searchParams or
-	let accountId = window.location.href.split('?accountId=')[1]?.split('&')[0];
+	let accountId = window.location.href.split('?accountId=')[1]?.split('&')[0] || window.location.href.split('?account_id=')[1]?.split('&')[0];
 	if (account) {
 		accountId = account.accountId;
 	}
