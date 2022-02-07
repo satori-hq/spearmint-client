@@ -115,7 +115,15 @@ export const ClaimRoute = (props) => {
 			error = e
 		}
 		update('app.loading', false);
-		if (!res.success) {
+		if (error) {
+			return dispatch(setDialog({
+				msg: <div>
+					<p>Looks like you've already claimed this NFT!</p>
+					<p>Only one claim is allowed per wallet.</p>
+				</div>,
+				choices: ['Ok']
+			}));
+		} else if (!res.success) {
 			return dispatch(setDialog({
 				msg: <div>
 					<p>There was an issue claiming your NFT.</p>
