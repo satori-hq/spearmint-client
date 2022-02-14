@@ -26,7 +26,7 @@ const Layout = ({ media, title, paras, buttons = [], tips = [], theme }) =>
 				</div>
 				<div>
 					{buttons.length > 0 && buttons.map(({ label, className, onClick }, i) => label &&
-						<button key={i} className={className} onClick={onClick}>{label}</button>
+						<button style={{ cursor: 'pointer' }} key={i} className={className} onClick={onClick}>{label}</button>
 					)}
 				</div>
 				<div>

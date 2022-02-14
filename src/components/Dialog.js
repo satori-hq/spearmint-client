@@ -56,13 +56,13 @@ export const Dialog = ({
 				}
 				{
 					choices &&
-                    choices.map((label, i) => <button key={i} onClick={() => resolve(label)}>{label}</button>)
+                    choices.map((label, i) => <button style={{ cursor: 'pointer' }} key={i} onClick={() => resolve(label)}>{label}</button>)
 				}
-				{!info && !choices && <button className="center"
+				{!info && !choices && <button style={{ cursor: 'pointer' }} className="center"
 					onClick={resolveInput}
 				>{acceptLabel}</button>}
 
-				{onCloseButton && <button className="center"
+				{onCloseButton && <button style={{ cursor: 'pointer' }} className="center"
 					onClick={handleClose}
 				>{Object.keys(onCloseButton)[0]}</button>}
 
