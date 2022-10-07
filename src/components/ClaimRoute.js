@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { set } from '../utils/storage'
+import { set } from '../utils/storage';
 import { pathAndArgs } from '../utils/history';
 import { ITEM_KEY, getItem, setDialog } from '../state/app';
 import { walletUrl } from '../state/near';
@@ -32,25 +32,25 @@ export const ClaimRoute = (props) => {
 		accountId = account.accountId;
 	}
 
-	const [theme, setTheme] = useState()
+	const [theme, setTheme] = useState();
 
 	// code is the only path param e.g. /#/code
 	const code = pathArgs[0];
 
 	const onMount = async () => {
 		update('app.loading', true);
-		if (!code || !code.length) return
+		if (!code || !code.length) return;
 		const item = await dispatch(getItem(code));
 
 		/// lazy import theme here
-		let { theme } = item || {}
+		let { theme } = item || {};
 
 		/// debuggin theme
 		// theme = 'genc'
 
 		if (theme && theme !== 'default') {
-			setTheme(themes[theme])
-			themes[theme]?.css && themes[theme].css()
+			setTheme(themes[theme]);
+			themes[theme]?.css && themes[theme].css();
 		}
 
 		update('app.loading', false);
@@ -112,7 +112,7 @@ export const ClaimRoute = (props) => {
 			});
 		} catch (e) {
 			console.warn(e);
-			error = e
+			error = e;
 		}
 		update('app.loading', false);
 		if (error) {
@@ -133,9 +133,9 @@ export const ClaimRoute = (props) => {
 			}));
 		}
 		/// TODO check if successful, get nftHash (from NEAR res) then update localStorage item to reflect this
-		const newItem = { ...item, nftHash: res.res.transaction.hash }
-		set(ITEM_KEY + code, newItem)
-		update('item', newItem)
+		const newItem = { ...item, nftHash: res.res.transaction.hash };
+		set(ITEM_KEY + code, newItem);
+		update('item', newItem);
 		update('app.loading', false);
 		launchConfetti();
 	};

@@ -34,7 +34,7 @@ const Layout = ({ media, title, paras, buttons = [], tips = [], theme }) =>
 				</div>
 			</div>
 		</div>
-	</div>
+	</div>;
 
 export const Claim = (props) => {
 
