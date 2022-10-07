@@ -41,6 +41,16 @@ export const initNear =
   		return { near, wallet, account };
   	};
 
+export const getNFTMetadata = async (contractId) => {
+	const account = await getAccount(contractId);	
+	try {
+		return await account.viewFunction(contractId, 'nft_metadata', {});
+	} catch (e) {
+		console.warn('error nft_metadata', e);
+		return null;
+	}
+};
+
 export const getType = async (contractId, token_type_title) => {
 	const account = await getAccount(contractId);
 	try {

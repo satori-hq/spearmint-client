@@ -2,7 +2,7 @@ import { State } from "../utils/state";
 import { fetchJson } from "../utils/api-utils";
 import { get, set } from "../utils/storage";
 
-import { initNear, getType } from "./near";
+import { initNear, getType, getNFTMetadata } from "./near";
 
 const initialState = {
 	app: {
@@ -20,7 +20,7 @@ export const ITEM_KEY = "__ITEM_";
 export const { appStore, AppProvider } = State(initialState, "app");
 
 export const onAppMount =
-  ({ path, args, pathArgs }) =>
+({ path, args, pathArgs }) =>
   	async ({ update, getState, dispatch }) => {
   		dispatch(initNear());
   		update("app", { loading: false });
@@ -45,13 +45,14 @@ export const getItem =
   		}
 
   		if (!item) return null;
-
-  		console.log(item, "item");
-
-  		const type = await getType(item.contractId, item.title);
-  		console.log(type);
-  		item.media = media ? media : IPFS_ROUTE + type.metadata.media;
-
+  		
+  		// build mediaURL
+  		const nftMetadata = await getNFTMetadata(item.contractId);
+  		const type = await getType(item.contractId, item.title);  		
+  		const mediaBaseURL = nftMetadata.base_uri ? nftMetadata.base_uri : IPFS_ROUTE; // assume IPFS if no base_uri is set on contract metadata
+  		const trailingSlash = mediaBaseURL[mediaBaseURL.length - 1] === "/" ? "" : "/";
+  		item.media = media ? media : mediaBaseURL + trailingSlash + type.metadata.media;
+  		
   		set(ITEM_KEY + code, item);
   		update("item", item);
   		return item;
