@@ -11,9 +11,9 @@ const Layout = ({ media, title, paras, buttons = [], tips = [], theme }) =>
 						<div className='image'>
 							{
 								theme?.videoOverride ? 
-								<video src={theme?.videoOverride} autoPlay muted loop crossOrigin="*" />
-								:
-								<img src={theme?.imgOverride ? theme.imgOverride : media} crossOrigin="*" />
+									<video src={theme?.videoOverride} autoPlay muted loop crossOrigin="*" />
+									:
+									<img src={theme?.imgOverride ? theme.imgOverride : media} crossOrigin="*" />
 							}
 						</div>
 					</div>
@@ -66,11 +66,11 @@ export const Claim = (props) => {
 						label: theme.claimedButtons[0].label,
 						onClick: () => window.open(theme.claimedButtons[0].link + '?accountId=' + accountId)
 					}
-					:
-					{
-						label: 'View NFT in NEAR Wallet',
-						onClick: () => window.open(walletUrl + '/?tab=collectibles')
-					}
+						:
+						{
+							label: 'View NFT in NEAR Wallet',
+							onClick: () => window.open(walletUrl + '/?tab=collectibles')
+						}
 				],
 				theme
 			}} />
@@ -87,7 +87,7 @@ export const Claim = (props) => {
 				}],
 				theme
 			}} />
-			;
+		;
 	}
 
 	if (!item) {
@@ -109,8 +109,8 @@ export const Claim = (props) => {
 					],
 					buttons: [
 						!createdAccount ? {
-						label: theme?.claimButtons ? theme.claimButtons[0] : 'Create Wallet',
-						onClick: handleCreateWallet
+							label: theme?.claimButtons ? theme.claimButtons[0] : 'Create Wallet',
+							onClick: handleCreateWallet
 						} : {},
 						{
 							label: theme?.claimButtons ? theme.claimButtons[1] : 'Connect Wallet',

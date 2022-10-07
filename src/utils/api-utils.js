@@ -2,12 +2,12 @@ import getConfig from '../config';
 import { get } from '../utils/storage';
 
 /// Where are we?
-const subdomain = window.location.host.split('.')[0]
-let ENV = subdomain?.split('-')[1]
-if (!ENV) ENV = window.location.hash.split('?ENV=')[1]
-if (!ENV || !/dev|testnet|mainnet/.test(ENV)) ENV = subdomain === 'sc' ? 'mainnet' : 'testnet'
+const subdomain = window.location.host.split('.')[0];
+let ENV = subdomain?.split('-')[1];
+if (!ENV) ENV = window.location.hash.split('?ENV=')[1];
+if (!ENV || !/dev|testnet|mainnet/.test(ENV)) ENV = subdomain === 'sc' ? 'mainnet' : 'testnet';
 
-export const env = ENV
+export const env = ENV;
 
 export const {
 	GAS,
@@ -15,7 +15,7 @@ export const {
 	contractName, contractMethods
 } = getConfig(ENV);
 
-const API_URL = `https://spearmint-${ENV}.satdev.workers.dev/v1/`
+const API_URL = `https://spearmint-${ENV}.satdev.workers.dev/v1/`;
 
 export const fetchJson = ({ url, method = 'GET', body = {} }) =>
 	fetch(/http/g.test(url) ? url : API_URL + url, {
@@ -31,7 +31,7 @@ export const fetchJson = ({ url, method = 'GET', body = {} }) =>
 			} catch (e) {
 				console.warn(e);
 			}
-			if (error.error) error = error.error
+			if (error.error) error = error.error;
 			throw { status, error };
 		}
 		if (status === 204) {

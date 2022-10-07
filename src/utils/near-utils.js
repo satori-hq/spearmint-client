@@ -1,7 +1,6 @@
 import getConfig from '../config';
 import * as nearAPI from 'near-api-js';
-
-import { env } from './api-utils'
+import { env } from './api-utils';
 
 export const {
 	GAS,
