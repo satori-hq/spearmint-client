@@ -51,11 +51,11 @@ export const getItem =
   		console.log('nftMetadata		',nftMetadata);
   		const type = await getType(item.contractId, item.title);
   		console.log('type				', type);
-  		const mediaBaseURL = type.metadata.media ? type.metadata.media : IPFS_ROUTE; // assume IPFS if no base_uri is set on contract metadata
-  		console.log('mediaBaseURL		', mediaBaseURL);
-  		const trailingSlash = mediaBaseURL[mediaBaseURL.length - 1] === "/" ? "" : "/";
-  		console.log('trailingSlash		', trailingSlash);
-  		item.media = mediaBaseURL ? mediaBaseURL : mediaBaseURL + trailingSlash + type.metadata.media;
+  		const isHTTP = type.metadata.media.startsWith('http://');
+  		const isHTTPS = type.metadata.media.startsWith('https://');
+  		const containsBaseURL = isHTTP || isHTTPS;
+  		console.log('containsBaseURL				', containsBaseURL);
+  		item.media = containsBaseURL ? type.metadata.media : IPFS_ROUTE + type.metadata.media;
   		console.log('item.media			', item.media);
   		
   		set(ITEM_KEY + code, item);
