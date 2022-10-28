@@ -55,7 +55,7 @@ export const getItem =
   		console.log('mediaBaseURL		', mediaBaseURL);
   		const trailingSlash = mediaBaseURL[mediaBaseURL.length - 1] === "/" ? "" : "/";
   		console.log('trailingSlash		', trailingSlash);
-  		item.media = media ? media : mediaBaseURL + trailingSlash + type.metadata.media;
+  		item.media = mediaBaseURL ? mediaBaseURL : mediaBaseURL + trailingSlash + type.metadata.media;
   		console.log('item.media			', item.media);
   		
   		set(ITEM_KEY + code, item);
