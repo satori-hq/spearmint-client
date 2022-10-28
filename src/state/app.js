@@ -48,10 +48,15 @@ export const getItem =
   		
   		// build mediaURL
   		const nftMetadata = await getNFTMetadata(item.contractId);
-  		const type = await getType(item.contractId, item.title);  		
+  		console.log('nftMetadata		',nftMetadata);
+  		const type = await getType(item.contractId, item.title);
+  		console.log('type				', type);
   		const mediaBaseURL = nftMetadata.base_uri ? nftMetadata.base_uri : IPFS_ROUTE; // assume IPFS if no base_uri is set on contract metadata
+  		console.log('mediaBaseURL		', mediaBaseURL);
   		const trailingSlash = mediaBaseURL[mediaBaseURL.length - 1] === "/" ? "" : "/";
+  		console.log('trailingSlash		', trailingSlash);
   		item.media = media ? media : mediaBaseURL + trailingSlash + type.metadata.media;
+  		console.log('item.media			', item.media);
   		
   		set(ITEM_KEY + code, item);
   		update("item", item);
